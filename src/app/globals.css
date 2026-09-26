@@ -1,0 +1,671 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   copyfomo design tokens (mockup v2: calm light canvas, one app frame, mint as
+   the only brand hue, ink-black primary pills, pixel robots as the mascots).
+
+   Use the Tailwind names from the @theme blocks below (bg-card, text-muted,
+   border-border, bg-mint-50, text-mint-700, rounded-card, shadow-card …)
+   instead of raw hex values anywhere in components.
+
+   Text pairs are WCAG AA on --card and --surface: --text, --text-2, --muted,
+   --mint-700, --up, --down, --paper-ink. --icon is for icons / non-text only.
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* canvas */
+  --bg: #eef1f3;
+  --bg-grid: rgb(24 44 56 / 0.035); /* one sparse 160px grid, desktop only */
+
+  /* app frame + surfaces */
+  --frame-top: rgb(255 255 255 / 0.92);
+  --frame-mid: rgb(255 255 255 / 0.58);
+  --frame-bottom: rgb(234 239 242 / 0.78);
+  --frame-edge-hi: #ffffff;
+  --frame-edge-lo: rgb(24 44 56 / 0.1);
+  --surface: #f6f8f9; /* app interior (behind cards) */
+  --card: #ffffff;
+  --card-2: #f2f4f6; /* hover fills, inset fields */
+  --card-3: #e8ecef; /* skeleton blocks */
+  --border: #e4e8eb;
+  --border-strong: #d4dadf;
+  --hairline: rgb(24 44 56 / 0.07);
+
+  /* text */
+  --text: #14191c;
+  --text-2: #3b4449;
+  --muted: #5f686d; /* 5.7:1 on white, 5.3:1 on --surface */
+  --icon: #7d878c; /* icons / non-text only */
+  --ink: #111416; /* primary action fill */
+  --ink-hover: #262c30;
+  --on-ink: #ffffff; /* text on ink / mint-700 / down fills */
+
+  /* mint, the brand hue */
+  --mint-50: #effcf9;
+  --mint-100: #d5f6f0;
+  --mint-200: #b2eee4;
+  --mint-300: #88e3d6;
+  --mint-400: #5cd4c4;
+  --mint-500: #2fbfae;
+  --mint-600: #1d9f91;
+  --mint-700: #147d72; /* mint text on white: 5.0:1 */
+  --mint-800: #0f5f57;
+  --mint-900: #083f3a;
+
+  /* hero banner: saturated mid-teal with dark ink (white fails AA on it) */
+  --hero-1: #52cdc3;
+  --hero-2: #63d5cb;
+  --hero-3: #8de1d9;
+  --hero-ink: #05302b; /* ≥ 7.4:1 on every hero stop */
+  --hero-ink-2: #083d37; /* ≥ 6.2:1 */
+  --bubble-1: #117c71; /* white text on it: 5.1:1 */
+  --bubble-2: #0b5f57;
+
+  /* semantic */
+  --up: #0a7f44; /* 5.1:1 on white */
+  --up-bg: #e7f6ed;
+  --down: #cf2f3d; /* 5.0:1 on white */
+  --down-ink: #b42330; /* text on --down-bg (5.7:1) and the hover fill of danger buttons (6.3:1 on white) */
+  --down-bg: #fdecee;
+  --live-dot: #e5484d;
+  --info: #0e7490;
+  --info-bg: #e6f5f8;
+  --warn: #8a5a00; /* amber text, 6.4:1 on white */
+  /* PAPER mode chip */
+  --paper-bg: #fff7e6;
+  --paper-border: #f0d9a2;
+  --paper-ink: #6e4a00; /* 7.4:1 on --paper-bg */
+  --paper-dot: #e5a312;
+  /* LIVE (real SOL) mode chip */
+  --live-bg: #fff0f1;
+  --live-border: #f5c6ca;
+  --live-ink: #9b1c28; /* 7.0:1 on --live-bg */
+
+  /* robot identity accents (robot tiles / rings only, never UI chrome). Same 7 names as the generator. */
+  --acc-mint: #3fc4b3;
+  --acc-blue: #4f8ef3;
+  --acc-violet: #a283ec;
+  --acc-gold: #d9b27f;
+  --acc-pink: #ec85ae;
+  --acc-lime: #8cc640;
+  --acc-orange: #f08a4b;
+  --acc-green: #57c47f; /* mockup name, kept for completeness */
+
+  /* raw radii (Tailwind names: rounded-frame, rounded-app, rounded-hero, rounded-card, rounded-card-sm, …) */
+  --r-frame: 36px;
+  --r-app: 24px;
+  --r-hero: 18px;
+  --r-card: 16px;
+  --r-card-sm: 12px;
+  --r-field: 12px;
+  --r-icon: 10px;
+  --r-btn: 9px;
+  --r-tag: 6px;
+
+  /* motion */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* focus ring: one colour everywhere (mint-600 reads on white, surface, mint tints and the hero) */
+  --focus-ring: var(--mint-600);
+
+  /* Space the shell takes at the viewport edges (Shell.module.css sets them per breakpoint). Use them for
+     sticky elements and scroll margins: bottom: calc(var(--shell-bottom-inset) + 12px). */
+  --shell-top-inset: 0px;
+  --shell-bottom-inset: 0px;
+}
+
+@theme inline {
+  /* surfaces */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-card: var(--card);
+  --color-card-2: var(--card-2);
+  --color-card-3: var(--card-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-hairline: var(--hairline);
+
+  /* text + ink */
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-muted: var(--muted);
+  --color-icon: var(--icon);
+  --color-ink: var(--ink);
+  --color-ink-hover: var(--ink-hover);
+  --color-on-ink: var(--on-ink);
+
+  /* mint */
+  --color-mint-50: var(--mint-50);
+  --color-mint-100: var(--mint-100);
+  --color-mint-200: var(--mint-200);
+  --color-mint-300: var(--mint-300);
+  --color-mint-400: var(--mint-400);
+  --color-mint-500: var(--mint-500);
+  --color-mint-600: var(--mint-600);
+  --color-mint-700: var(--mint-700);
+  --color-mint-800: var(--mint-800);
+  --color-mint-900: var(--mint-900);
+
+  /* hero banner */
+  --color-hero-1: var(--hero-1);
+  --color-hero-2: var(--hero-2);
+  --color-hero-3: var(--hero-3);
+  --color-hero-ink: var(--hero-ink);
+  --color-hero-ink-2: var(--hero-ink-2);
+  --color-bubble-1: var(--bubble-1);
+  --color-bubble-2: var(--bubble-2);
+
+  /* semantic */
+  --color-up: var(--up);
+  --color-up-bg: var(--up-bg);
+  --color-down: var(--down);
+  --color-down-ink: var(--down-ink);
+  --color-down-bg: var(--down-bg);
+  --color-live-dot: var(--live-dot);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-warn: var(--warn);
+  --color-paper-bg: var(--paper-bg);
+  --color-paper-border: var(--paper-border);
+  --color-paper-ink: var(--paper-ink);
+  --color-paper-dot: var(--paper-dot);
+  --color-live-bg: var(--live-bg);
+  --color-live-border: var(--live-border);
+  --color-live-ink: var(--live-ink);
+
+  /* robot accents */
+  --color-acc-mint: var(--acc-mint);
+  --color-acc-blue: var(--acc-blue);
+  --color-acc-violet: var(--acc-violet);
+  --color-acc-gold: var(--acc-gold);
+  --color-acc-pink: var(--acc-pink);
+  --color-acc-lime: var(--acc-lime);
+  --color-acc-orange: var(--acc-orange);
+  --color-acc-green: var(--acc-green);
+
+  --color-focus: var(--focus-ring);
+
+  /* next/font variables are set on <html> in layout.tsx */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-frame: var(--r-frame);
+  --radius-app: var(--r-app);
+  --radius-hero: var(--r-hero);
+  --radius-card: var(--r-card);
+  --radius-card-sm: var(--r-card-sm);
+  --radius-field: var(--r-field);
+  --radius-icon: var(--r-icon);
+  --radius-btn: var(--r-btn);
+  --radius-tag: var(--r-tag);
+
+  --ease-out-soft: var(--ease);
+
+  /* Shell breakpoints: `app:` = the desktop frame with a sidebar (≥ 761px), `side:` = full sidebar with labels
+     (≥ 1061px). Below `app:` the shell is the phone layout (top bar + bottom tab bar). */
+  --breakpoint-app: 47.5625rem;
+  --breakpoint-side: 66.3125rem;
+
+  --animate-blink: soft-pulse 1.6s ease-in-out infinite; /* status dots, skeletons */
+  --animate-pulse-live: live-ring 2.2s ease-out infinite; /* the red LIVE dot */
+  --animate-bob: bob 1.4s steps(2, jump-none) infinite alternate;
+  --animate-ticker: ticker 40s linear infinite;
+  --animate-rise: rise 0.35s var(--ease) both;
+}
+
+/* Elevation. Literal values (Tailwind rewrites shadow colours), emitted as variables too. */
+@theme static {
+  --shadow-pill: 0 1px 2px rgb(20 38 48 / 0.06), 0 4px 12px -6px rgb(20 38 48 / 0.14);
+  --shadow-card: 0 1px 2px rgb(20 38 48 / 0.05), 0 6px 16px -10px rgb(20 38 48 / 0.16);
+  --shadow-lift: 0 1px 2px rgb(20 38 48 / 0.05), 0 22px 40px -18px rgb(12 70 66 / 0.34);
+  --shadow-float: 0 14px 34px -12px rgb(20 40 50 / 0.3), 0 0 0 1px rgb(24 44 56 / 0.06);
+  --shadow-frame: 0 50px 90px -40px rgb(22 48 60 / 0.28), 0 18px 40px -22px rgb(22 48 60 / 0.16);
+  --shadow-ink: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 10px 20px -10px rgb(0 0 0 / 0.6);
+  --shadow-white: inset 0 -1px 0 rgb(8 80 72 / 0.08), 0 8px 18px -10px rgb(8 80 72 / 0.55), 0 0 0 1px rgb(8 80 72 / 0.05);
+  --shadow-mini: 0 1px 2px rgb(24 44 56 / 0.06), 0 4px 10px -6px rgb(24 44 56 / 0.18);
+  --shadow-tile: inset 0 0 0 1px rgb(255 255 255 / 0.4), 0 4px 6px -1px rgb(20 38 48 / 0.14);
+}
+
+@keyframes soft-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+@keyframes live-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(229 72 77 / 0.35);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 5px rgb(229 72 77 / 0);
+  }
+}
+/* whole pixels only: pixel art must stay on the pixel grid */
+@keyframes bob {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes rise {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Type rule for data: amounts (SOL, USD, token quantities), addresses, mints and signatures are JetBrains Mono
+   with tabular figures (`num` for amounts, `addr` for addresses). Words, verbs, times, counts and percentages stay
+   in the body font (with tabular-nums where they line up). */
+@utility addr {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ── base ─────────────────────────────────────────────────────────────────── */
+html {
+  background: var(--bg);
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  /* Plus Jakarta Sans turns "0x" into "0×" through contextual alternates (breaks handles like @0xdetweiler). */
+  font-feature-settings: "calt" 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* Phone shell: sticky 56px top bar, floating bottom tab bar (see Shell.module.css). */
+@media (max-width: 760px) {
+  :root {
+    --shell-top-inset: 56px;
+    --shell-bottom-inset: calc(88px + env(safe-area-inset-bottom));
+  }
+  html {
+    scroll-padding-top: 64px;
+  }
+}
+
+@media (min-width: 761px) {
+  body {
+    background-image:
+      radial-gradient(1200px 700px at 50% 42%, rgb(255 255 255 / 0.78), rgb(255 255 255 / 0) 70%),
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: auto, 160px 160px, 160px 160px;
+    background-position: center top;
+    background-attachment: fixed;
+  }
+}
+
+::selection {
+  background: var(--mint-200);
+  color: var(--text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Pixel art: always nearest-neighbour. Sprites are 32×32; show them at 32 / 64 / 96 / 128 / 192 / 256 px. */
+.pixelated {
+  image-rendering: pixelated;
+  shape-rendering: crispEdges;
+}
+
+
+/* ── page wrapper (optional helper for pages) ──────────────────────────────────
+   The shell's <main> has no padding of its own. `.page` gives a page the mockup's inset from the sidebar and the
+   frame edge; on phones it is 16px on the sides (the shell already clears the bottom tab bar). */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 22px 22px 18px 8px;
+}
+@media (max-width: 760px) {
+  .page {
+    padding: 4px 16px 0;
+  }
+}
+
+/* ── hover card (the trader-card interaction from the mockup) ─────────────────
+   One hover model driven by --on (0 → 1): real hover (pointer devices), keyboard focus inside the card, and
+   `.is-hover` (a showcased card). Children:
+     .hover-card__rest    fades out on hover (stats row)
+     .hover-card__reveal  fades in over it (View / Copy buttons); hidden on touch screens
+     .hover-card__touch   touch screens only (e.g. an always-visible Copy button)
+   The folded corner is drawn by ::before/::after; set --curl-bg to the colour behind the card. */
+.hover-card {
+  --on: 0;
+  --curl: 36px;
+  --curl-bg: var(--surface);
+  position: relative;
+  background: var(--card);
+  border: 1px solid rgb(24 44 56 / 0.05);
+  border-radius: var(--r-card-sm);
+  box-shadow:
+    var(--shadow-card),
+    0 22px 40px -18px rgb(12 70 66 / calc(0.34 * var(--on)));
+  transform: translateY(calc(-3px * var(--on)));
+  transition:
+    transform 0.22s var(--ease),
+    box-shadow 0.22s var(--ease);
+}
+@media (hover: hover) {
+  .hover-card:hover {
+    --on: 1;
+  }
+}
+.hover-card:focus-within,
+.hover-card.is-hover {
+  --on: 1;
+}
+/* a picked card (the leaderboard's pick mode) */
+.hover-card.is-picked {
+  background: var(--mint-50);
+  border-color: var(--mint-400);
+  box-shadow:
+    0 0 0 3px var(--mint-100),
+    var(--shadow-card),
+    0 22px 40px -18px rgb(12 70 66 / calc(0.34 * var(--on)));
+}
+.hover-card:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--shadow-card),
+    0 22px 40px -18px rgb(12 70 66 / 0.34),
+    0 0 0 2px var(--mint-500);
+}
+.hover-card::before,
+.hover-card::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  z-index: 2;
+  pointer-events: none;
+  width: calc(var(--curl) * var(--on));
+  height: calc(var(--curl) * var(--on));
+  transition:
+    width 0.26s var(--ease),
+    height 0.26s var(--ease);
+}
+.hover-card::before {
+  background: linear-gradient(225deg, var(--curl-bg) 50%, transparent 50%);
+  border-top-right-radius: var(--r-card-sm);
+}
+.hover-card::after {
+  border-bottom-left-radius: 11px;
+  background:
+    linear-gradient(225deg, transparent 49.6%, rgb(255 255 255 / 0.95) 50.4%, rgb(255 255 255 / 0) 60%),
+    linear-gradient(45deg, #26b3a3 0%, var(--mint-400) 26%, var(--mint-200) 44%, #e6fbf7 50%, transparent 50.4%);
+  filter: drop-shadow(-2px 3px 2.5px rgb(10 80 74 / 0.3));
+}
+.hover-card__rest {
+  opacity: calc(1 - var(--on));
+  transform: translateY(calc(-4px * var(--on)));
+  transition:
+    opacity 0.16s,
+    transform 0.2s var(--ease);
+}
+.hover-card__reveal {
+  opacity: var(--on);
+  transform: translateY(calc(6px - 6px * var(--on)));
+  transition:
+    opacity 0.16s,
+    transform 0.22s var(--ease);
+}
+.hover-card:not(:hover, :focus-within, .is-hover) .hover-card__reveal {
+  pointer-events: none;
+}
+.hover-card__touch {
+  display: none;
+}
+@media (max-width: 760px) {
+  .hover-card {
+    --curl-bg: var(--bg);
+  }
+}
+/* Touch screens: no hover state at all. The resting content stays, the reveal is replaced by __touch. */
+@media (hover: none) {
+  .hover-card,
+  .hover-card:focus-within,
+  .hover-card.is-hover {
+    --on: 0;
+  }
+  .hover-card__reveal {
+    display: none;
+  }
+  /* back to whatever display the element's own utilities give it (e.g. a Button's inline-flex) */
+  .hover-card__touch {
+    display: revert-layer;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Wallet picker (@solana/wallet-adapter-react-ui's WalletModal) and our
+   NoWalletModal, restyled to the light look. The library stylesheet is NOT
+   imported (it pulls a Google Fonts @import and a purple theme); these rules are
+   the complete styling it needs.
+   ───────────────────────────────────────────────────────────────────────────── */
+.wallet-adapter-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 150ms var(--ease);
+}
+.wallet-adapter-modal.wallet-adapter-modal-fade-in {
+  opacity: 1;
+}
+.wallet-adapter-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(17 20 22 / 0.42);
+  backdrop-filter: blur(4px);
+}
+.wallet-adapter-modal-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 16px;
+}
+.wallet-adapter-modal-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  padding: 22px 20px 20px;
+  border-radius: 22px;
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+  box-shadow: 0 30px 60px -24px rgb(20 40 50 / 0.45), 0 0 0 1px rgb(24 44 56 / 0.06);
+}
+.wallet-adapter-modal-title {
+  margin: 0;
+  padding: 0 44px 16px 2px;
+  font-family: var(--font-sans);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-align: left;
+  color: var(--text);
+}
+.wallet-adapter-modal-button-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-pill);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.wallet-adapter-modal-button-close svg {
+  fill: var(--muted);
+}
+.wallet-adapter-modal-button-close:hover {
+  background: var(--card-2);
+}
+.wallet-adapter-modal-button-close:hover svg {
+  fill: var(--text);
+}
+.wallet-adapter-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.wallet-adapter-collapse {
+  width: 100%;
+}
+.wallet-adapter-collapse .wallet-adapter-modal-list,
+.wallet-adapter-modal-list .wallet-adapter-collapse > li + li {
+  margin-top: 8px;
+}
+.wallet-adapter-button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 52px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgb(24 44 56 / 0.05);
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    transform 0.18s var(--ease);
+}
+.wallet-adapter-button:not([disabled]):hover {
+  border-color: var(--mint-300);
+  background: var(--mint-50);
+}
+.wallet-adapter-button:focus-visible,
+.wallet-adapter-modal-button-close:focus-visible,
+.wallet-adapter-modal-list-more:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.wallet-adapter-button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.wallet-adapter-button-start-icon,
+.wallet-adapter-button-end-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+.wallet-adapter-button-start-icon img,
+.wallet-adapter-button-end-icon img {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+.wallet-adapter-modal-list .wallet-adapter-button span {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: 1px solid var(--mint-200);
+  border-radius: 999px;
+  background: var(--mint-50);
+  color: var(--mint-800);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+}
+.wallet-adapter-modal-list-more {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-end;
+  margin-top: 12px;
+  padding: 4px 2px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.wallet-adapter-modal-list-more:hover {
+  color: var(--text);
+}
+.wallet-adapter-modal-list-more svg {
+  fill: currentColor;
+  transition: transform 0.15s var(--ease);
+}
+.wallet-adapter-modal-list-more-icon-rotate {
+  transform: rotate(180deg);
+}
+.wallet-adapter-modal-middle {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,4 @@
+# render output of the bot generator (the shipped copy lives in public/bots)
+out/
+out-curator/
+gallery.html

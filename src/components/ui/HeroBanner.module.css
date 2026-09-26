@@ -1,0 +1,231 @@
+/* The mockup's mint hero banner: saturated teal gradient, faint white curves on the right, a "gm" bubble on the
+   top-left corner, pixel robots standing on the left and poking over the top edge, copy + CTAs on the right.
+   Stacks (robots centred on top) below 861 px. */
+.hero {
+  --hb-bot: 128px;
+  /* --hb-n (robot count) is set inline by HeroBanner; robots overlap by 5 sprite pixels (see bots.module.css) */
+  --hb-n: 3;
+  --hb-cluster: calc(var(--hb-bot) * var(--hb-n) - var(--hb-bot) / 32 * 5 * (var(--hb-n) - 1));
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 136px;
+  margin-top: 16px;
+  padding: 18px 24px 18px calc(var(--hb-cluster) + 30px);
+  border-radius: var(--r-hero);
+  color: var(--hero-ink);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    radial-gradient(560px 240px at 96% -10%, rgb(255 255 255 / 0.28), rgb(255 255 255 / 0) 70%),
+    linear-gradient(100deg, var(--hero-1) 0%, var(--hero-2) 38%, #72dad1 68%, var(--hero-3) 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.55),
+    inset 0 -22px 36px -26px rgb(6 100 92 / 0.4),
+    0 14px 30px -20px rgb(20 120 110 / 0.55);
+}
+.bg svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.bubble {
+  position: absolute;
+  left: -9px;
+  top: -14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  height: 38px;
+  padding: 0 8px;
+  border-radius: 20px 20px 20px 7px;
+  background: linear-gradient(150deg, var(--bubble-1), var(--bubble-2));
+  color: #fff;
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    0 8px 16px -6px rgb(8 80 74 / 0.55),
+    0 0 0 4px rgb(255 255 255 / 0.8);
+}
+
+.bots {
+  position: absolute;
+  left: 18px;
+  bottom: 10px;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+}
+.title {
+  margin: 0;
+  color: var(--hero-ink);
+  font-style: italic;
+  text-transform: uppercase;
+}
+/* Whole-pixel line heights keep the banner's height a whole number, so the robots (anchored to its bottom edge)
+   land on the pixel grid. */
+.l1 {
+  display: block;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 27px;
+  letter-spacing: -0.005em;
+}
+.l2 {
+  display: block;
+  font-size: 33px;
+  font-weight: 800;
+  line-height: 34px;
+  letter-spacing: -0.02em;
+}
+.text {
+  max-width: 560px;
+  margin: 8px 0 0;
+  color: var(--hero-ink-2);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  text-wrap: pretty;
+}
+.cta {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* focus rings on the teal: dark ink reads, mint would not */
+.hero :focus-visible {
+  outline-color: var(--hero-ink);
+}
+
+@media (max-width: 1300px) {
+  .cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+/* long copy: the buttons stack at every desktop width, so the text column gets the room */
+.stack .cta {
+  flex-direction: column;
+  align-items: stretch;
+}
+@media (max-width: 960px) {
+  .hero {
+    --hb-bot: 96px;
+    padding-left: calc(var(--hb-cluster) + 24px);
+  }
+  .bg svg {
+    display: none;
+  }
+}
+@media (max-width: 900px) and (min-width: 861px) {
+  .hero {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+  }
+  .cta {
+    flex-direction: row;
+  }
+}
+/* stacked: robots centred on top (narrow tablets and phones) */
+@media (max-width: 860px) {
+  .hero {
+    --hb-bot: 96px;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    min-height: 0;
+    margin-top: 48px;
+    padding: 0 16px 16px;
+    text-align: center;
+  }
+  .bots {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    justify-content: center;
+    margin: -44px auto 4px;
+  }
+  .bubble {
+    left: -6px;
+    top: -16px;
+  }
+  .l1 {
+    font-size: 22px;
+    line-height: 23px;
+  }
+  .l2 {
+    font-size: 30px;
+    line-height: 31px;
+  }
+  .text {
+    max-width: 340px;
+    margin: 6px auto 0;
+  }
+  .cta {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 420px;
+    margin: 14px auto 0;
+  }
+  .cta > * {
+    flex: 1 1 0;
+    min-width: 0;
+    height: 44px;
+    padding: 0 10px;
+  }
+  .stack .cta {
+    flex-direction: row;
+  }
+}
+/* compact (task pages such as the wizard): smaller robots and title on phones, so the task starts sooner */
+@media (max-width: 760px) {
+  .compact {
+    --hb-bot: 64px;
+    margin-top: 28px;
+  }
+  .compact .bots {
+    margin: -26px auto 2px;
+  }
+  .compact .l1 {
+    font-size: 18px;
+    line-height: 19px;
+  }
+  .compact .l2 {
+    font-size: 24px;
+    line-height: 25px;
+  }
+  .compact .text {
+    font-size: 12.5px;
+    line-height: 19px;
+  }
+}

@@ -1,0 +1,56 @@
+/* HeroRobots: three cast robots side by side, each playing its 8-frame blink strip (public/bots/anim/<name>.blink.png)
+   and bobbing by one sprite pixel with steps(), so the motion stays on the pixel grid. */
+.trio {
+  --bot: var(--bot-size, 128px);
+  display: inline-flex;
+  align-items: flex-end;
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .trio {
+    --bot: var(--bot-compact, 96px);
+  }
+}
+
+.bot {
+  --px: calc(var(--bot) / 32);
+  flex: none;
+  width: var(--bot);
+  height: var(--bot);
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: calc(var(--bot) * 8) var(--bot);
+  image-rendering: pixelated;
+}
+.bot + .bot {
+  /* overlap by 5 sprite pixels: a whole number of screen pixels at every size (20 px at 128, 15 at 96, 10 at 64),
+     so every robot stays on the pixel grid */
+  margin-left: calc(var(--px) * -5);
+}
+
+.animate .bot {
+  animation:
+    bot-blink 1.6s steps(8) infinite,
+    bot-bob 1.2s steps(2, jump-none) infinite alternate;
+  animation-delay: calc(var(--i, 0) * -0.53s), calc(var(--i, 0) * -0.4s);
+}
+
+@keyframes bot-blink {
+  to {
+    background-position: calc(var(--bot) * -8) 0;
+  }
+}
+@keyframes bot-bob {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 calc(var(--px) * -1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate .bot {
+    animation: none;
+  }
+}

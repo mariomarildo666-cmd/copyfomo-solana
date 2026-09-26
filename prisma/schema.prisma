@@ -1,0 +1,423 @@
+// copyfomo data model.
+// SQLite for local dev; switch `provider` to "postgresql" for production.
+// Conventions:
+//   - SOL amounts are Float (SOL, not lamports) — display + sizing precision is plenty.
+//   - Token amounts are String of raw base units (integer) + `decimals`, never Float.
+//   - Every timestamp is UTC.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// A copy agent: one custodial Solana wallet that mirrors one or more traders.
+model Agent {
+  id             String   @id @default(cuid())
+  /// Public name, e.g. "moonmath.copy". Unique, url-safe slug lives in `slug`.
+  name           String
+  slug           String   @unique
+  /// LEGACY: sha256(ownerKey) hex for agents created before wallet login (ownerWallet null). The raw key was
+  /// shown once. Wallet-owned agents store "" here and the x-owner-key path is never used for them.
+  ownerKeyHash   String
+  /// The wallet that signed in and created the agent (base58). It owns the agent (session auth) and is the
+  /// only withdrawal destination (payoutAddress = ownerWallet). null = legacy owner-key agent.
+  ownerWallet    String?
+  /// Withdrawals can ONLY go here. Fixed at creation (= ownerWallet for wallet-owned agents). Owner-only in DTOs.
+  payoutAddress  String
+  /// Agent wallet public key (base58). This is the deposit address.
+  depositAddress String   @unique
+  /// Sealed (x25519 + AES-256-GCM) agent secret key. Only the worker can open it.
+  sealedSecret   String
+  /// "paper" | "live" — fixed at creation from COPYFOMO_MODE.
+  mode           String   @default("paper")
+  /// "awaiting_deposit" | "active" | "paused" | "stopped"
+  status         String   @default("awaiting_deposit")
+
+  /// "mirror" (1:1 same SOL size, capped) | "fixed" (fixedSol per buy) | "proportional" (same % of balance)
+  sizingMode     String   @default("mirror")
+  fixedSol       Float    @default(0.1)
+  maxPerTradeSol Float    @default(1)
+  /// SOL never spent on buys (fees / rent buffer).
+  minReserveSol  Float    @default(0.02)
+  slippageBps    Int      @default(300)
+  copySells      Boolean  @default(true)
+
+  /// Paper mode virtual SOL balance.
+  paperSol       Float    @default(0)
+  /// Last observed on-chain SOL balance (live mode), refreshed by the worker.
+  lastBalanceSol Float    @default(0)
+  balanceAt      DateTime?
+
+  /// Live: platform performance fees accrued on winning sells, not yet swept to PLATFORM_FEE_WALLET.
+  /// Never spendable or withdrawable (withdrawable = balance − feeOwedSol − buffer).
+  feeOwedSol     Float    @default(0)
+  /// Fees already paid: paper (deducted from paperSol at the sell) and live (swept on-chain).
+  feesPaidSol    Float    @default(0)
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  follows        Follow[]
+  trades         CopyTrade[]
+  positions      Position[]
+  commands       Command[]
+  deposits       Deposit[]
+  feeSweeps      FeeSweep[]
+
+  @@index([ownerWallet])
+}
+
+/// A trader being watched: a FOMO user (resolved to a Solana wallet) or any custom wallet.
+model Trader {
+  id            String   @id @default(cuid())
+  /// Solana wallet (base58) — the thing we actually watch on-chain.
+  wallet        String   @unique
+  /// FOMO handle without "@", null for custom wallets.
+  handle        String?
+  displayName   String?
+  avatarUrl     String?
+  /// "fomo" | "custom"
+  source        String   @default("fomo")
+  verified      Boolean  @default(false)
+  pnl24hUsd     Float?
+  pnl7dUsd      Float?
+  pnl30dUsd     Float?
+  volumeUsd     Float?
+  /// Last signature fully processed by the watcher (polling cursor).
+  lastSignature String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  follows       Follow[]
+  events        TraderEvent[]
+  positions     Position[]
+  copies        CopyTrade[]
+}
+
+model Follow {
+  agentId   String
+  traderId  String
+  createdAt DateTime @default(now())
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  trader    Trader   @relation(fields: [traderId], references: [id], onDelete: Cascade)
+
+  @@id([agentId, traderId])
+  @@index([traderId])
+}
+
+/// An original trade detected on-chain from a watched trader wallet.
+model TraderEvent {
+  id           String      @id @default(cuid())
+  traderId     String
+  signature    String      @unique
+  /// "buy" | "sell"
+  side         String
+  mint         String
+  symbol       String?
+  /// SOL (or SOL-equivalent, if the trader used USDC/USDT) spent on a buy / received on a sell.
+  solAmount    Float
+  /// abs(raw token delta) of the trader for this tx.
+  tokenRaw     String
+  decimals     Int
+  /// Sells only: tokens sold / trader's token balance before the tx (0..1].
+  sellFraction Float?
+  /// Buys only (proportional sizing): SOL spent / trader SOL-equivalent balance before the tx (0..1].
+  buyFraction  Float?
+  /// "fomo" (rule R: FOMO relayer + marker, USDC-priced) | "other". With COPY_VENUE=fomo only "fomo" buys are copied.
+  venue        String      @default("other")
+  blockTime    DateTime
+  detectedAt   DateTime    @default(now())
+
+  trader       Trader      @relation(fields: [traderId], references: [id], onDelete: Cascade)
+  copies       CopyTrade[]
+
+  @@index([traderId, blockTime])
+  @@index([detectedAt])
+}
+
+/// What an agent did in response to a TraderEvent (or a manual close / withdraw sell).
+model CopyTrade {
+  id         String       @id @default(cuid())
+  agentId    String
+  traderId   String?
+  eventId    String?
+  /// "buy" | "sell"
+  side       String
+  mint       String
+  symbol     String?
+  /// SOL spent (buy) / received (sell). For failed/skipped rows: the intended SOL size (0 if unknown).
+  solAmount  Float        @default(0)
+  tokenRaw   String       @default("0")
+  decimals   Int          @default(0)
+  /// "pending" | "filled" | "failed" | "skipped"
+  status     String       @default("pending")
+  /// Human-readable reason for skipped / failed.
+  reason     String?
+  /// Live: tx signature. Paper: "paper_<cuid>".
+  signature  String?
+  /// ms between the original tx blockTime and our fill.
+  latencyMs  Int?
+  /// Platform performance fee on this FILLED sell: (proceeds − cost part) × PLATFORM_FEE_BPS / 10000 when that
+  /// profit is > 0, else 0. solAmount stays the gross proceeds. Buys, losing sells: 0.
+  feeSol     Float        @default(0)
+  createdAt  DateTime     @default(now())
+
+  agent      Agent        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  trader     Trader?      @relation(fields: [traderId], references: [id], onDelete: SetNull)
+  event      TraderEvent? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@unique([agentId, eventId])
+  @@index([agentId, createdAt])
+  @@index([createdAt])
+}
+
+/// A "sleeve": what an agent holds of `mint` because it followed `trader`.
+/// Sells mirror the trader's sold fraction against this sleeve only.
+model Position {
+  id          String   @id @default(cuid())
+  agentId     String
+  traderId    String
+  mint        String
+  symbol      String?
+  decimals    Int
+  /// Raw base units currently held in this sleeve.
+  rawAmount   String
+  /// SOL cost basis of what is still held.
+  costSol     Float
+  /// Cumulative realized PnL in SOL for this sleeve.
+  realizedSol Float    @default(0)
+  openedAt    DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  agent       Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  trader      Trader   @relation(fields: [traderId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, traderId, mint])
+  @@index([agentId])
+}
+
+/// Owner-issued work the worker executes (the web process never touches agent keys).
+model Command {
+  id        String    @id @default(cuid())
+  agentId   String
+  /// "withdraw" | "close_all"
+  type      String
+  /// JSON string, e.g. {"amountSol":0.5} or {"all":true,"closePositions":true}
+  payload   String    @default("{}")
+  /// "pending" | "running" | "done" | "failed"
+  status    String    @default("pending")
+  /// JSON string result or error message.
+  result    String?
+  createdAt DateTime  @default(now())
+  doneAt    DateTime?
+
+  agent     Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+/// A SOL deposit the owner signed in their wallet and our server relayed (live), or a paper credit.
+/// Manual transfers to the deposit address are NOT recorded here (the worker's balance loop sees them).
+model Deposit {
+  id          String    @id @default(cuid())
+  agentId     String
+  /// The signing wallet (= Agent.ownerWallet). Paper credits: the session wallet.
+  fromWallet  String
+  amountSol   Float
+  /// Live: the transfer's signature. Paper: "paper_<random>".
+  signature   String    @unique
+  /// "submitted" | "confirmed" | "failed"
+  status      String    @default("submitted")
+  error       String?
+  createdAt   DateTime  @default(now())
+  confirmedAt DateTime?
+
+  agent       Agent     @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, createdAt])
+  @@index([status])
+}
+
+/// A platform-fee transfer from an agent wallet to PLATFORM_FEE_WALLET (live only), made by the worker.
+model FeeSweep {
+  id        String   @id @default(cuid())
+  agentId   String
+  amountSol Float
+  signature String?
+  /// "pending" | "sent" | "confirmed" | "failed"
+  status    String   @default("pending")
+  error     String?
+  createdAt DateTime @default(now())
+
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@index([agentId, createdAt])
+  @@index([status])
+}
+
+/// Small key/value cache (token metadata, worker heartbeat, Helius caps, FOMO indexer status).
+model Kv {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ── On-chain FOMO indexer ──────────────────────────────────────────────────────────────────────────
+// FOMO trades are detected from public Solana data (rule R in src/lib/fomo-chain.ts) and ranked by us.
+// No FOMO API is used. Above ~500 tracked wallets (or the Business global stream) move to Postgres.
+
+/// A wallet in copyfomo's FOMO ranking universe.
+model FomoWallet {
+  wallet         String            @id
+  /// FOMO handle without "@": only from the seed file or a Helius label, never from user input.
+  handle         String?
+  handleLower    String?
+  /// "seed" | "helius"
+  handleSource   String?
+  handleVerified Boolean           @default(false)
+  displayName    String?
+  /// X/Twitter handle without "@" (seed file only).
+  xHandle        String?
+  /// "seed" | "discovered" | "user"
+  origin         String
+  /// "tracked" (indexed + ranked) | "candidate" (seen, not indexed) | "excluded"
+  status         String            @default("candidate")
+  /// JSON array of Helius identity tags.
+  heliusTags     String?
+  identityAt     DateTime?
+  /// First classified FOMO trade (on-chain evidence).
+  evidenceSig    String?
+  /// Last on-demand checkFomoActivity run (cached 6 h).
+  checkedAt      DateTime?
+  /// Discovery: USDC volume in sampled trades, decayed exp(-dt/3d); lifetime sample hits.
+  sampleScore    Float             @default(0)
+  sampleScoreAt  DateTime?
+  sampleHits     Int               @default(0)
+  lastSampleAt   DateTime?
+  trackedAt      DateTime?
+  /// Earliest time from which our FomoSwap history is complete.
+  coveredFrom    DateTime?
+  /// "pending" | "running" | "done" | "partial" | "gap" | "failed"
+  backfillState  String            @default("pending")
+  /// gTFA paginationToken or oldest processed signature (resume point).
+  backfillCursor String?
+  gapFrom        DateTime?
+  lastTradeAt    DateTime?
+  statsDirty     Boolean           @default(true)
+  statsAt        DateTime?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  swaps          FomoSwap[]
+  stats          FomoWalletStats[]
+  positions      FomoPosition[]
+
+  @@index([status])
+  @@index([handleLower])
+  @@index([status, sampleScore])
+}
+
+/// One classified FOMO transaction of a tracked wallet: trade, conversion, or cross-chain order.
+model FomoSwap {
+  signature  String     @id
+  wallet     String
+  slot       Int
+  txIndex    Int?
+  blockTime  DateTime
+  /// "buy" | "sell" | "convert" | "xchain"
+  kind       String
+  /// Token mint (buy/sell), WSOL (convert), USDC (xchain)
+  mint       String
+  /// Raw base units (integer string): token (buy/sell), lamports (convert), USDC (xchain).
+  tokenRaw   String
+  decimals   Int
+  /// |USDC change| of the wallet in USD. Includes FOMO's fee: buy = USDC spent, sell = USDC received.
+  usd        Float
+  /// SOL/USD at blockTime when known (for SOL-denominated PnL).
+  solUsd     Float?
+  /// dflow | jupiter | okx | fomo_legacy | unknown | relay
+  router     String
+  /// convert only: "sol_to_usdc" | "usdc_to_sol"
+  direction  String?
+  /// stream | logs | backfill | gapfill | sample | watcher | check
+  source     String
+  createdAt  DateTime   @default(now())
+  fomoWallet FomoWallet @relation(fields: [wallet], references: [wallet], onDelete: Cascade)
+
+  @@index([wallet, slot])
+  @@index([wallet, mint])
+  @@index([blockTime])
+}
+
+/// Per-window stats computed by the worker (src/lib/fomo-stats.ts), one row per (wallet, window).
+model FomoWalletStats {
+  wallet           String
+  /// "24h" | "7d" | "30d"
+  window           String
+  trades           Int
+  buys             Int
+  sells            Int
+  volumeUsd        Float
+  realizedPnlUsd   Float
+  realizedPnlSol   Float?
+  unrealizedPnlUsd Float?
+  openPositions    Int
+  winRate          Float?
+  mintsTraded      Int
+  activeDays       Int
+  unmatchedSellUsd Float
+  xchainUsd        Float
+  /// xchainUsd / (xchainUsd + buy volume in the window); null when both are 0.
+  xchainShare      Float?
+  /// JSON [{mint,symbol,pnlUsd}] top 3 by |realized|
+  topMints         String     @default("[]")
+  lastTradeAt      DateTime?
+  /// "full" | "partial"
+  coverage         String
+  eligible         Boolean
+  rank             Int?
+  computedAt       DateTime
+  fomoWallet       FomoWallet @relation(fields: [wallet], references: [wallet], onDelete: Cascade)
+
+  @@id([wallet, window])
+  @@index([window, rank])
+}
+
+/// Open FIFO lots of a tracked wallet, aggregated per mint (what is left after matched sells).
+model FomoPosition {
+  wallet     String
+  mint       String
+  rawAmount  String
+  decimals   Int
+  costUsd    Float
+  costSol    Float?
+  openedAt   DateTime
+  valueUsd   Float?
+  pricedAt   DateTime?
+  fomoWallet FomoWallet @relation(fields: [wallet], references: [wallet], onDelete: Cascade)
+
+  @@id([wallet, mint])
+}
+
+/// Hourly SOL/USD (last write per hour wins). Used for SOL-denominated PnL.
+model SolUsdHour {
+  /// UTC hour start
+  hour   DateTime @id
+  price  Float
+  /// "jupiter" | "binance"
+  source String
+}
+
+/// Helius credit meter shared by web + worker (one row per UTC day).
+model HeliusUsage {
+  /// "2026-09-26" (UTC)
+  day          String   @id
+  credits      Float    @default(0)
+  calls        Int      @default(0)
+  wsBytes      Float    @default(0)
+  lookupChecks Int      @default(0)
+  updatedAt    DateTime @updatedAt
+}

@@ -1,0 +1,2690 @@
+{
+  "name": "copyfomo bots",
+  "generator": "tools/bots — node tools/bots/render.mjs --out <tmp> --no-lab --no-parts && node tools/bots/export.mjs public/bots --from <tmp>",
+  "generated": "2026-09-26T20:39:12.826Z",
+  "frameSize": 32,
+  "sheet": {
+    "image": "sheet.png",
+    "frames": "sheet.json",
+    "columns": 16,
+    "rows": 29
+  },
+  "moodset": {
+    "image": "moodset.png",
+    "frames": "moodset.json",
+    "moods": [
+      "idle",
+      "blink",
+      "happy",
+      "buy",
+      "sell",
+      "sleep"
+    ],
+    "robots": [
+      "minty",
+      "byte",
+      "kit",
+      "orbit",
+      "the-original",
+      "the-copy"
+    ]
+  },
+  "appMoods": [
+    "idle",
+    "blink",
+    "happy",
+    "buy",
+    "sell",
+    "sleep"
+  ],
+  "anims": {
+    "blink": {
+      "frames": [
+        "idle",
+        "idle",
+        "idle",
+        "idle",
+        "idle",
+        "idle",
+        "blink",
+        "idle"
+      ],
+      "ms": 1600
+    },
+    "react": {
+      "frames": [
+        "idle",
+        "idle",
+        "blink",
+        "idle",
+        "buy",
+        "buy",
+        "buy",
+        "happy",
+        "happy",
+        "happy",
+        "idle",
+        "blink",
+        "idle",
+        "sell",
+        "sell",
+        "sell",
+        "idle",
+        "idle",
+        "sleep",
+        "sleep",
+        "sleep",
+        "sleep",
+        "blink",
+        "idle"
+      ],
+      "ms": 4800
+    }
+  },
+  "groups": [
+    "heroes",
+    "pair",
+    "icons"
+  ],
+  "robots": [
+    {
+      "name": "minty",
+      "group": "heroes",
+      "about": "The host. Waves you in and explains copy trading.",
+      "tags": [
+        "basic",
+        "wave",
+        "raised",
+        "tv",
+        "boxy",
+        "flatTop",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "twinAntennae",
+        "antenna",
+        "mint"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "wave",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 0,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "tv"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "twinAntennae"
+        ],
+        "body": [
+          "basic"
+        ],
+        "arms": [
+          "wave"
+        ],
+        "accent": "mint",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/minty.png",
+        "png8x": "png@8x/minty.png",
+        "svg": "svg/minty.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/minty.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/minty.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "byte",
+      "group": "heroes",
+      "about": "The analyst. Reads every candle before it copies.",
+      "tags": [
+        "terminal",
+        "screen",
+        "legs",
+        "trade",
+        "hold",
+        "boxy",
+        "bezel",
+        "led",
+        "eyes",
+        "antenna",
+        "chartCard",
+        "chart",
+        "blue"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 1,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "boxy"
+        ],
+        "face": [
+          "bezel"
+        ],
+        "eyes": [
+          "led"
+        ],
+        "top": [
+          "antenna"
+        ],
+        "body": [
+          "terminal"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "blue",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "front": [
+          "chartCard"
+        ],
+        "chest": "bars"
+      },
+      "files": {
+        "png": "png/byte.png",
+        "png8x": "png@8x/byte.png",
+        "svg": "svg/byte.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/byte.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/byte.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "kit",
+      "group": "heroes",
+      "about": "The sweetheart. Copies only traders it loves.",
+      "tags": [
+        "belly",
+        "round",
+        "legs",
+        "wave",
+        "raised",
+        "cat",
+        "catHead",
+        "flatTop",
+        "fit",
+        "kitty",
+        "eyes",
+        "mouth",
+        "hearts",
+        "love",
+        "sleepCorner",
+        "pink"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "wave",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 2,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "cat"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "kitty"
+        ],
+        "body": [
+          "belly"
+        ],
+        "arms": [
+          "wave"
+        ],
+        "accent": "pink",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "fx": [
+          "hearts"
+        ]
+      },
+      "files": {
+        "png": "png/kit.png",
+        "png8x": "png@8x/kit.png",
+        "svg": "svg/kit.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/kit.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/kit.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "orbit",
+      "group": "heroes",
+      "about": "The moonshot. Always one rocket away from the moon.",
+      "tags": [
+        "hover",
+        "float",
+        "hold",
+        "dome",
+        "round",
+        "fit",
+        "orb",
+        "eyes",
+        "beacon",
+        "antenna",
+        "glow",
+        "rocket",
+        "moon",
+        "blue"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 3,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "dome"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "beacon"
+        ],
+        "body": [
+          "hover"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "blue",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "front": [
+          "rocket"
+        ]
+      },
+      "files": {
+        "png": "png/orbit.png",
+        "png8x": "png@8x/orbit.png",
+        "svg": "svg/orbit.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/orbit.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/orbit.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "nova",
+      "group": "heroes",
+      "about": "The guardian angel. Stop-loss always on.",
+      "tags": [
+        "capsule",
+        "mitt",
+        "round",
+        "pill",
+        "fit",
+        "tall",
+        "eyes",
+        "halo",
+        "gold",
+        "twinkle",
+        "sparkle",
+        "sleepCorner",
+        "violet"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 4,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "capsule"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "tall"
+        ],
+        "top": [
+          "halo"
+        ],
+        "body": [
+          "capsule"
+        ],
+        "arms": [
+          "mitt"
+        ],
+        "accent": "violet",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "fx": [
+          "twinkle"
+        ]
+      },
+      "files": {
+        "png": "png/nova.png",
+        "png8x": "png@8x/nova.png",
+        "svg": "svg/nova.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/nova.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/nova.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "pixel",
+      "group": "heroes",
+      "about": "The hype bot. Celebrates every green candle.",
+      "tags": [
+        "basic",
+        "cheer",
+        "happy",
+        "raised",
+        "mini",
+        "boxy",
+        "small",
+        "flatTop",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "propeller",
+        "hat",
+        "fun",
+        "lime"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 5,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "mini"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "propeller"
+        ],
+        "body": [
+          "basic"
+        ],
+        "arms": [
+          "cheer"
+        ],
+        "accent": "lime",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/pixel.png",
+        "png8x": "png@8x/pixel.png",
+        "svg": "svg/pixel.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/pixel.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/pixel.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "volt",
+      "group": "heroes",
+      "about": "The speedster. First in, first out.",
+      "tags": [
+        "mech",
+        "legs",
+        "down",
+        "idle",
+        "wide",
+        "boxy",
+        "visor",
+        "flatTop",
+        "band",
+        "slit",
+        "eyes",
+        "boltEars",
+        "ears",
+        "side",
+        "gold"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 6,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "wide"
+        ],
+        "face": [
+          "band"
+        ],
+        "eyes": [
+          "slit"
+        ],
+        "top": [
+          "boltEars"
+        ],
+        "body": [
+          "mech"
+        ],
+        "arms": [
+          "down"
+        ],
+        "accent": "gold",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/volt.png",
+        "png8x": "png@8x/volt.png",
+        "svg": "svg/volt.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/volt.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/volt.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "echo",
+      "group": "heroes",
+      "about": "The listener. Tunes into whale wallets.",
+      "tags": [
+        "belly",
+        "round",
+        "legs",
+        "down",
+        "idle",
+        "fit",
+        "orb",
+        "eyes",
+        "headphones",
+        "ears",
+        "side",
+        "music",
+        "violet",
+        "eyes-violet"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 7,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "round"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "headphones"
+        ],
+        "body": [
+          "belly"
+        ],
+        "arms": [
+          "down"
+        ],
+        "accent": "violet",
+        "eyeColor": "violet",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/echo.png",
+        "png8x": "png@8x/echo.png",
+        "svg": "svg/echo.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/echo.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/echo.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "zap",
+      "group": "heroes",
+      "about": "The FOMO bot. Never misses a pump.",
+      "tags": [
+        "hover",
+        "float",
+        "down",
+        "idle",
+        "wide",
+        "boxy",
+        "visor",
+        "flatTop",
+        "fit",
+        "tall",
+        "eyes",
+        "beacon",
+        "antenna",
+        "glow",
+        "fire",
+        "hot",
+        "fomo",
+        "sleepCorner",
+        "orange"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 8,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "wide"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "tall"
+        ],
+        "top": [
+          "beacon"
+        ],
+        "body": [
+          "hover"
+        ],
+        "arms": [
+          "down"
+        ],
+        "accent": "orange",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "fx": [
+          "fire"
+        ]
+      },
+      "files": {
+        "png": "png/zap.png",
+        "png8x": "png@8x/zap.png",
+        "svg": "svg/zap.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/zap.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/zap.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "chip",
+      "group": "heroes",
+      "about": "The little one. Small bags, big dreams.",
+      "tags": [
+        "basic",
+        "nub",
+        "mini",
+        "boxy",
+        "small",
+        "flatTop",
+        "rounded",
+        "led",
+        "eyes",
+        "antenna",
+        "mint"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 9,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "mini"
+        ],
+        "face": [
+          "rounded"
+        ],
+        "eyes": [
+          "led"
+        ],
+        "top": [
+          "antenna"
+        ],
+        "body": [
+          "basic"
+        ],
+        "arms": [
+          "nub"
+        ],
+        "accent": "mint",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/chip.png",
+        "png8x": "png@8x/chip.png",
+        "svg": "svg/chip.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/chip.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/chip.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "luna",
+      "group": "heroes",
+      "about": "The night owl. Trades while you sleep.",
+      "tags": [
+        "scarf",
+        "slim",
+        "legs",
+        "down",
+        "idle",
+        "dome",
+        "round",
+        "fit",
+        "orb",
+        "eyes",
+        "kittyEars",
+        "ears",
+        "cat",
+        "twinkle",
+        "sparkle",
+        "sleepCorner",
+        "violet",
+        "eyes-pink"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 10,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "dome"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "kittyEars"
+        ],
+        "body": [
+          "scarf"
+        ],
+        "arms": [
+          "down"
+        ],
+        "accent": "violet",
+        "eyeColor": "pink",
+        "mood": "idle",
+        "fx": [
+          "twinkle"
+        ]
+      },
+      "files": {
+        "png": "png/luna.png",
+        "png8x": "png@8x/luna.png",
+        "svg": "svg/luna.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/luna.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/luna.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "rex",
+      "group": "heroes",
+      "about": "The whale. Top hat, deep pockets.",
+      "tags": [
+        "terminal",
+        "screen",
+        "legs",
+        "trade",
+        "hold",
+        "boxy",
+        "fit",
+        "led",
+        "eyes",
+        "topHat",
+        "hat",
+        "fancy",
+        "solCoin",
+        "coin",
+        "sol",
+        "coins",
+        "money",
+        "gold",
+        "sleepCorner",
+        "eyes-gold"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 11,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "boxy"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "led"
+        ],
+        "top": [
+          "topHat"
+        ],
+        "body": [
+          "terminal"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "gold",
+        "eyeColor": "gold",
+        "mood": "idle",
+        "front": [
+          "solCoin"
+        ],
+        "fx": [
+          "coins"
+        ],
+        "chest": "gold"
+      },
+      "files": {
+        "png": "png/rex.png",
+        "png8x": "png@8x/rex.png",
+        "svg": "svg/rex.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/rex.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/rex.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "mochi",
+      "group": "heroes",
+      "about": "The cozy one. Holds through every dip.",
+      "tags": [
+        "capsule",
+        "nub",
+        "round",
+        "pill",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "beanie",
+        "hat",
+        "cozy",
+        "hearts",
+        "love",
+        "sleepCorner",
+        "pink"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 12,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "capsule"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "beanie"
+        ],
+        "body": [
+          "capsule"
+        ],
+        "arms": [
+          "nub"
+        ],
+        "accent": "pink",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "fx": [
+          "hearts"
+        ]
+      },
+      "files": {
+        "png": "png/mochi.png",
+        "png8x": "png@8x/mochi.png",
+        "svg": "svg/mochi.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/mochi.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/mochi.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "sunny",
+      "group": "heroes",
+      "about": "The optimist. Every day is a green day.",
+      "tags": [
+        "basic",
+        "cheer",
+        "happy",
+        "raised",
+        "round",
+        "bezel",
+        "smile",
+        "eyes",
+        "mouth",
+        "halo",
+        "gold"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 13,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "round"
+        ],
+        "face": [
+          "bezel"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "halo"
+        ],
+        "body": [
+          "basic"
+        ],
+        "arms": [
+          "cheer"
+        ],
+        "accent": "gold",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/sunny.png",
+        "png8x": "png@8x/sunny.png",
+        "svg": "svg/sunny.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/sunny.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/sunny.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "juno",
+      "group": "heroes",
+      "about": "The scout. Sniffs out top traders.",
+      "tags": [
+        "hover",
+        "float",
+        "hold",
+        "cat",
+        "catHead",
+        "flatTop",
+        "band",
+        "slit",
+        "eyes",
+        "magnifier",
+        "search",
+        "blue"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 14,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "cat"
+        ],
+        "face": [
+          "band"
+        ],
+        "eyes": [
+          "slit"
+        ],
+        "body": [
+          "hover"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "blue",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "front": [
+          "magnifier"
+        ]
+      },
+      "files": {
+        "png": "png/juno.png",
+        "png8x": "png@8x/juno.png",
+        "svg": "svg/juno.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/juno.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/juno.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "astro",
+      "group": "heroes",
+      "about": "The explorer. Charts new tokens first.",
+      "tags": [
+        "mech",
+        "legs",
+        "mitt",
+        "dome",
+        "round",
+        "fit",
+        "tall",
+        "eyes",
+        "antenna",
+        "orange"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 15,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "dome"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "tall"
+        ],
+        "top": [
+          "antenna"
+        ],
+        "body": [
+          "mech"
+        ],
+        "arms": [
+          "mitt"
+        ],
+        "accent": "orange",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/astro.png",
+        "png8x": "png@8x/astro.png",
+        "svg": "svg/astro.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/astro.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/astro.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "dash",
+      "group": "heroes",
+      "about": "The day trader. Lives on the 1-minute chart.",
+      "tags": [
+        "terminal",
+        "screen",
+        "legs",
+        "trade",
+        "hold",
+        "tv",
+        "boxy",
+        "flatTop",
+        "fit",
+        "orb",
+        "eyes",
+        "cap",
+        "hat",
+        "street",
+        "phone",
+        "lime"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 16,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "tv"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "cap"
+        ],
+        "body": [
+          "terminal"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "lime",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "front": [
+          "phone"
+        ],
+        "chest": "line"
+      },
+      "files": {
+        "png": "png/dash.png",
+        "png8x": "png@8x/dash.png",
+        "svg": "svg/dash.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/dash.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/dash.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "pip",
+      "group": "heroes",
+      "about": "The rookie. Copied its first trade today.",
+      "tags": [
+        "belly",
+        "round",
+        "legs",
+        "wave",
+        "raised",
+        "mini",
+        "boxy",
+        "small",
+        "flatTop",
+        "fit",
+        "orb",
+        "eyes",
+        "beacon",
+        "antenna",
+        "glow",
+        "orange"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "wave",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 17,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "mini"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "beacon"
+        ],
+        "body": [
+          "belly"
+        ],
+        "arms": [
+          "wave"
+        ],
+        "accent": "orange",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/pip.png",
+        "png8x": "png@8x/pip.png",
+        "svg": "svg/pip.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/pip.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/pip.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "ziggy",
+      "group": "heroes",
+      "about": "The degen. Snapback on, bags packed.",
+      "tags": [
+        "scarf",
+        "slim",
+        "legs",
+        "down",
+        "idle",
+        "boxy",
+        "fit",
+        "kitty",
+        "eyes",
+        "mouth",
+        "cap",
+        "hat",
+        "street",
+        "pink"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 18,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "boxy"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "kitty"
+        ],
+        "top": [
+          "cap"
+        ],
+        "body": [
+          "scarf"
+        ],
+        "arms": [
+          "down"
+        ],
+        "accent": "pink",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/ziggy.png",
+        "png8x": "png@8x/ziggy.png",
+        "svg": "svg/ziggy.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/ziggy.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/ziggy.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "tofu",
+      "group": "heroes",
+      "about": "The sleeper. Agent paused, dreaming of gains.",
+      "tags": [
+        "scarf",
+        "slim",
+        "legs",
+        "nub",
+        "capsule",
+        "round",
+        "pill",
+        "rounded",
+        "led",
+        "eyes",
+        "beanie",
+        "hat",
+        "cozy",
+        "blue"
+      ],
+      "mood": "sleep",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 19,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "capsule"
+        ],
+        "face": [
+          "rounded"
+        ],
+        "eyes": [
+          "led"
+        ],
+        "top": [
+          "beanie"
+        ],
+        "body": [
+          "scarf"
+        ],
+        "arms": [
+          "nub"
+        ],
+        "accent": "blue",
+        "eyeColor": "cyan",
+        "mood": "sleep"
+      },
+      "files": {
+        "png": "png/tofu.png",
+        "png8x": "png@8x/tofu.png",
+        "svg": "svg/tofu.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/tofu.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/tofu.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "coco",
+      "group": "heroes",
+      "about": "The champion. Tops the weekly leaderboard.",
+      "tags": [
+        "belly",
+        "round",
+        "legs",
+        "hold",
+        "fit",
+        "tall",
+        "eyes",
+        "topHat",
+        "hat",
+        "fancy",
+        "trophy",
+        "win",
+        "leaderboard",
+        "orange"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 20,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "round"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "tall"
+        ],
+        "top": [
+          "topHat"
+        ],
+        "body": [
+          "belly"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "orange",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "front": [
+          "trophy"
+        ]
+      },
+      "files": {
+        "png": "png/coco.png",
+        "png8x": "png@8x/coco.png",
+        "svg": "svg/coco.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/coco.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/coco.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "blip",
+      "group": "heroes",
+      "about": "The pinger. Beeps on every copied trade.",
+      "tags": [
+        "mech",
+        "legs",
+        "down",
+        "idle",
+        "tv",
+        "boxy",
+        "flatTop",
+        "bezel",
+        "orb",
+        "eyes",
+        "beanie",
+        "hat",
+        "cozy",
+        "violet"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 21,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "tv"
+        ],
+        "face": [
+          "bezel"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "beanie"
+        ],
+        "body": [
+          "mech"
+        ],
+        "arms": [
+          "down"
+        ],
+        "accent": "violet",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/blip.png",
+        "png8x": "png@8x/blip.png",
+        "svg": "svg/blip.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/blip.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/blip.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "jet",
+      "group": "heroes",
+      "about": "The flyer. Propeller up, bags up.",
+      "tags": [
+        "capsule",
+        "wave",
+        "raised",
+        "wide",
+        "boxy",
+        "visor",
+        "flatTop",
+        "fit",
+        "led",
+        "eyes",
+        "propeller",
+        "hat",
+        "fun",
+        "lime"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "wave",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 22,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "wide"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "led"
+        ],
+        "top": [
+          "propeller"
+        ],
+        "body": [
+          "capsule"
+        ],
+        "arms": [
+          "wave"
+        ],
+        "accent": "lime",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/jet.png",
+        "png8x": "png@8x/jet.png",
+        "svg": "svg/jet.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/jet.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/jet.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "kiki",
+      "group": "heroes",
+      "about": "The cheerleader. Thumbs up for every copy.",
+      "tags": [
+        "scarf",
+        "slim",
+        "legs",
+        "thumbsUp",
+        "happy",
+        "cat",
+        "catHead",
+        "flatTop",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "lime"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 23,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "cat"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "body": [
+          "scarf"
+        ],
+        "arms": [
+          "thumbsUp"
+        ],
+        "accent": "lime",
+        "eyeColor": "cyan",
+        "mood": "idle"
+      },
+      "files": {
+        "png": "png/kiki.png",
+        "png8x": "png@8x/kiki.png",
+        "svg": "svg/kiki.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/kiki.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/kiki.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "the-original",
+      "group": "pair",
+      "about": "A crowned top trader. Everyone copies this one.",
+      "tags": [
+        "terminal",
+        "screen",
+        "legs",
+        "trade",
+        "hold",
+        "tv",
+        "boxy",
+        "flatTop",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "crown",
+        "hat",
+        "gold",
+        "royal",
+        "phone"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 24,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "tv"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "crown"
+        ],
+        "body": [
+          "terminal"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "gold",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "chest": "candles",
+        "front": [
+          "phone"
+        ]
+      },
+      "files": {
+        "png": "png/the-original.png",
+        "png8x": "png@8x/the-original.png",
+        "svg": "svg/the-original.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/the-original.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/the-original.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "the-copy",
+      "group": "pair",
+      "about": "Your agent. Same moves, a minted crown, a copy card in hand.",
+      "tags": [
+        "terminal",
+        "screen",
+        "legs",
+        "trade",
+        "hold",
+        "tv",
+        "boxy",
+        "flatTop",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "copyCrown",
+        "hat",
+        "crown",
+        "copy",
+        "copyCard",
+        "mint"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 25,
+      "spec": {
+        "shadow": [
+          "soft"
+        ],
+        "head": [
+          "tv"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "copyCrown"
+        ],
+        "body": [
+          "terminal"
+        ],
+        "arms": [
+          "hold"
+        ],
+        "accent": "mint",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "chest": "check",
+        "front": [
+          "copyCard"
+        ]
+      },
+      "files": {
+        "png": "png/the-copy.png",
+        "png8x": "png@8x/the-copy.png",
+        "svg": "svg/the-copy.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/the-copy.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/the-copy.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "icon-minty",
+      "group": "icons",
+      "about": "App icon: Minty, head only.",
+      "tags": [
+        "tv",
+        "boxy",
+        "flatTop",
+        "fit",
+        "smile",
+        "eyes",
+        "mouth",
+        "twinAntennae",
+        "antenna",
+        "mint"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 26,
+      "spec": {
+        "head": [
+          "tv"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "smile"
+        ],
+        "top": [
+          "twinAntennae"
+        ],
+        "accent": "mint",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "align": "center"
+      },
+      "files": {
+        "png": "png/icon-minty.png",
+        "png8x": "png@8x/icon-minty.png",
+        "svg": "svg/icon-minty.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/icon-minty.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/icon-minty.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "icon-kit",
+      "group": "icons",
+      "about": "App icon: cat bot, head only.",
+      "tags": [
+        "cat",
+        "catHead",
+        "flatTop",
+        "fit",
+        "kitty",
+        "eyes",
+        "mouth",
+        "mint"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 27,
+      "spec": {
+        "head": [
+          "cat"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "kitty"
+        ],
+        "accent": "mint",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "align": "center"
+      },
+      "files": {
+        "png": "png/icon-kit.png",
+        "png8x": "png@8x/icon-kit.png",
+        "svg": "svg/icon-kit.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/icon-kit.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/icon-kit.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    },
+    {
+      "name": "icon-orb",
+      "group": "icons",
+      "about": "App icon: dome bot with a live beacon.",
+      "tags": [
+        "dome",
+        "round",
+        "fit",
+        "orb",
+        "eyes",
+        "beacon",
+        "antenna",
+        "glow",
+        "mint"
+      ],
+      "mood": "idle",
+      "moods": [
+        "idle",
+        "blink",
+        "happy",
+        "wink",
+        "excited",
+        "love",
+        "buy",
+        "sell",
+        "money",
+        "thinking",
+        "sleep",
+        "shock",
+        "rekt",
+        "lookL",
+        "lookR"
+      ],
+      "appMoods": true,
+      "sheetRow": 28,
+      "spec": {
+        "head": [
+          "dome"
+        ],
+        "face": [
+          "fit"
+        ],
+        "eyes": [
+          "orb"
+        ],
+        "top": [
+          "beacon"
+        ],
+        "accent": "mint",
+        "eyeColor": "cyan",
+        "mood": "idle",
+        "align": "center"
+      },
+      "files": {
+        "png": "png/icon-orb.png",
+        "png8x": "png@8x/icon-orb.png",
+        "svg": "svg/icon-orb.svg",
+        "anim": {
+          "blink": {
+            "file": "anim/icon-orb.blink.png",
+            "frames": 8,
+            "ms": 1600
+          },
+          "react": {
+            "file": "anim/icon-orb.react.png",
+            "frames": 24,
+            "ms": 4800
+          }
+        }
+      }
+    }
+  ],
+  "icons": [
+    {
+      "name": "icon-minty",
+      "files": {
+        "1x": "icons/icon-minty@1x.png",
+        "tile-1x": "icons/icon-minty-tile@1x.png",
+        "tile-dark-1x": "icons/icon-minty-tile-dark@1x.png",
+        "2x": "icons/icon-minty@2x.png",
+        "tile-2x": "icons/icon-minty-tile@2x.png",
+        "tile-dark-2x": "icons/icon-minty-tile-dark@2x.png",
+        "4x": "icons/icon-minty@4x.png",
+        "tile-4x": "icons/icon-minty-tile@4x.png",
+        "tile-dark-4x": "icons/icon-minty-tile-dark@4x.png",
+        "8x": "icons/icon-minty@8x.png",
+        "tile-8x": "icons/icon-minty-tile@8x.png",
+        "tile-dark-8x": "icons/icon-minty-tile-dark@8x.png",
+        "16x": "icons/icon-minty@16x.png",
+        "tile-16x": "icons/icon-minty-tile@16x.png",
+        "tile-dark-16x": "icons/icon-minty-tile-dark@16x.png"
+      }
+    },
+    {
+      "name": "icon-kit",
+      "files": {
+        "1x": "icons/icon-kit@1x.png",
+        "tile-1x": "icons/icon-kit-tile@1x.png",
+        "tile-dark-1x": "icons/icon-kit-tile-dark@1x.png",
+        "2x": "icons/icon-kit@2x.png",
+        "tile-2x": "icons/icon-kit-tile@2x.png",
+        "tile-dark-2x": "icons/icon-kit-tile-dark@2x.png",
+        "4x": "icons/icon-kit@4x.png",
+        "tile-4x": "icons/icon-kit-tile@4x.png",
+        "tile-dark-4x": "icons/icon-kit-tile-dark@4x.png",
+        "8x": "icons/icon-kit@8x.png",
+        "tile-8x": "icons/icon-kit-tile@8x.png",
+        "tile-dark-8x": "icons/icon-kit-tile-dark@8x.png",
+        "16x": "icons/icon-kit@16x.png",
+        "tile-16x": "icons/icon-kit-tile@16x.png",
+        "tile-dark-16x": "icons/icon-kit-tile-dark@16x.png"
+      }
+    },
+    {
+      "name": "icon-orb",
+      "files": {
+        "1x": "icons/icon-orb@1x.png",
+        "tile-1x": "icons/icon-orb-tile@1x.png",
+        "tile-dark-1x": "icons/icon-orb-tile-dark@1x.png",
+        "2x": "icons/icon-orb@2x.png",
+        "tile-2x": "icons/icon-orb-tile@2x.png",
+        "tile-dark-2x": "icons/icon-orb-tile-dark@2x.png",
+        "4x": "icons/icon-orb@4x.png",
+        "tile-4x": "icons/icon-orb-tile@4x.png",
+        "tile-dark-4x": "icons/icon-orb-tile-dark@4x.png",
+        "8x": "icons/icon-orb@8x.png",
+        "tile-8x": "icons/icon-orb-tile@8x.png",
+        "tile-dark-8x": "icons/icon-orb-tile-dark@8x.png",
+        "16x": "icons/icon-orb@16x.png",
+        "tile-16x": "icons/icon-orb-tile@16x.png",
+        "tile-dark-16x": "icons/icon-orb-tile-dark@16x.png"
+      }
+    }
+  ],
+  "seedRules": {
+    "accents": [
+      "mint",
+      "blue",
+      "violet",
+      "gold",
+      "pink",
+      "lime",
+      "orange"
+    ],
+    "allow": {
+      "head": {
+        "tv": 3,
+        "dome": 2.5,
+        "cat": 2.5,
+        "mini": 2,
+        "capsule": 2,
+        "round": 1.5,
+        "wide": 1.5,
+        "boxy": 1.5
+      },
+      "face": {
+        "fit": 8,
+        "bezel": 1.5,
+        "rounded": 1,
+        "band": 1,
+        "oval": 1
+      },
+      "eyes": {
+        "smile": 3,
+        "orb": 3,
+        "led": 2.5,
+        "kitty": 1.5,
+        "tall": 1.5,
+        "slit": 1.25
+      },
+      "top": {
+        "antenna": 2,
+        "beacon": 2,
+        "twinAntennae": 2,
+        "kittyEars": 2,
+        "headphones": 1.5,
+        "propeller": 1,
+        "beanie": 1.25,
+        "boltEars": 1,
+        "topHat": 1,
+        "cap": 1,
+        "halo": 1
+      },
+      "body": {
+        "basic": 3,
+        "belly": 2,
+        "terminal": 2,
+        "capsule": 1.5,
+        "scarf": 1.5,
+        "hover": 1.5,
+        "mech": 1.5
+      },
+      "arms": {
+        "down": 2,
+        "nub": 2,
+        "hold": 2.5,
+        "wave": 1.5,
+        "mitt": 1,
+        "cheer": 1.5,
+        "thumbsUp": 1
+      },
+      "front": {
+        "phone": 2,
+        "copyCard": 2,
+        "solCoin": 2,
+        "chartCard": 1.5,
+        "rocket": 1.5,
+        "trophy": 1,
+        "magnifier": 1
+      },
+      "fx": {
+        "twinkle": 2,
+        "hearts": 1.5,
+        "pump": 1.5,
+        "coins": 1.5,
+        "fire": 1
+      }
+    }
+  }
+}

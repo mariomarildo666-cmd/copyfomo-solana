@@ -1,0 +1,364 @@
+/* App frame (mockup v2).
+   ≥ 1061 px  frame + 180 px sidebar with labels
+   761–1060   frame + 76 px icon rail
+   ≤ 760      no frame: sticky top bar + floating bottom tab bar */
+
+.outer {
+  padding: 24px 56px 40px;
+}
+
+.frame {
+  position: relative;
+  max-width: 1328px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: var(--r-frame);
+  background: linear-gradient(155deg, var(--frame-top) 0%, var(--frame-mid) 42%, var(--frame-bottom) 100%);
+  box-shadow:
+    inset 1.5px 1.5px 0 var(--frame-edge-hi),
+    inset -1px -1.5px 0 var(--frame-edge-lo),
+    0 0 0 1px rgb(24 44 56 / 0.05),
+    var(--shadow-frame);
+}
+
+.app {
+  position: relative;
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  min-height: calc(100dvh - 24px - 40px - 32px);
+  border-radius: var(--r-app);
+  background: var(--surface);
+  box-shadow:
+    0 0 0 1px var(--hairline),
+    0 1px 2px rgb(24 44 56 / 0.05),
+    inset 0 1px 0 rgb(255 255 255 / 0.9);
+}
+
+/* ── sidebar ─────────────────────────────────────────────────────────────── */
+.side {
+  position: sticky;
+  top: 16px;
+  z-index: 20;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  min-width: 0;
+  height: calc(100dvh - 80px);
+  min-height: min-content;
+  padding: 22px 12px 14px;
+}
+@media (max-height: 640px) {
+  .side {
+    position: relative;
+    top: auto;
+    height: auto;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--text);
+  text-decoration: none;
+}
+.word {
+  font-size: 17.5px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 11px;
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s;
+}
+.item svg {
+  flex: none;
+  color: var(--icon);
+  transition: color 0.15s;
+}
+.item:hover {
+  background: rgb(255 255 255 / 0.75);
+  color: var(--text);
+}
+.item:hover svg {
+  color: var(--text-2);
+}
+.item[aria-current="page"] {
+  background: var(--card);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow:
+    var(--shadow-pill),
+    inset 0 0 0 1px rgb(24 44 56 / 0.04);
+}
+.item[aria-current="page"] svg {
+  color: var(--text);
+}
+.lbl {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.liveDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--live-dot);
+  animation: shell-live 2.2s ease-out infinite;
+}
+@keyframes shell-live {
+  0% {
+    box-shadow: 0 0 0 0 rgb(229 72 77 / 0.35);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 5px rgb(229 72 77 / 0);
+  }
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+.foot .item {
+  height: 38px;
+}
+
+/* ── main column ─────────────────────────────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.legal {
+  margin: auto 0 0;
+  padding: 22px 22px 18px 8px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 0.15s var(--ease);
+}
+.skip:focus {
+  transform: none;
+}
+
+/* phone-only chrome */
+.mtop,
+.tabbar {
+  display: none;
+}
+
+/* ── responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .outer {
+    padding: 16px 28px 28px;
+  }
+  .app {
+    min-height: calc(100dvh - 16px - 28px - 32px);
+  }
+}
+
+@media (max-width: 1060px) {
+  .outer {
+    padding: 16px 20px 24px;
+  }
+  .app {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+  /* icon rail: scoped to the sidebar, so a Logo used elsewhere (e.g. the page footer) keeps its wordmark */
+  .side .brand {
+    justify-content: center;
+    padding: 0;
+  }
+  .side .word,
+  .lbl {
+    display: none;
+  }
+  .item {
+    justify-content: center;
+    padding: 0;
+  }
+  .item .liveDot {
+    position: absolute;
+    top: 9px;
+    right: 13px;
+    box-shadow: 0 0 0 2px var(--surface);
+    animation: none;
+  }
+  .legal {
+    padding-left: 22px;
+  }
+}
+
+@media (max-width: 760px) {
+  .outer {
+    padding: 0;
+  }
+  .frame {
+    max-width: none;
+    padding: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .app {
+    display: block;
+    min-height: 100dvh;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .side {
+    display: none;
+  }
+
+  .mtop {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    height: 56px;
+    padding: 0 16px;
+    border-bottom: 1px solid rgb(24 44 56 / 0.06);
+    background: rgb(238 241 243 / 0.9);
+    /* -webkit- first: the CSS build keeps only the last of the pair, and the standard one must win */
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+  }
+  .mtop .brand {
+    gap: 8px;
+    padding: 0;
+  }
+  .mtop .word {
+    display: inline;
+    font-size: 17px;
+  }
+  .mtopRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .main {
+    min-height: calc(100dvh - 56px);
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+  .legal {
+    padding: 22px 16px 6px;
+  }
+
+  .tabbar {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 45;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    height: 64px;
+    padding: 6px;
+    border-radius: 22px;
+    background: rgb(255 255 255 / 0.9);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+    box-shadow:
+      0 16px 34px -14px rgb(20 40 50 / 0.34),
+      0 0 0 1px rgb(24 44 56 / 0.06);
+  }
+  .tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    border-radius: 16px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
+  }
+  .tab[aria-current="page"] {
+    background: var(--mint-50);
+    color: var(--mint-800);
+    font-weight: 700;
+  }
+  .tabIc {
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .tab .liveDot {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    box-shadow: 0 0 0 2px #fff;
+    animation: none;
+  }
+}
+
+/* very narrow phones: the wordmark gives way to the wallet pill */
+@media (max-width: 379px) {
+  .mtop .word {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveDot {
+    animation: none;
+  }
+}

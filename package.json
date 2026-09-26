@@ -1,0 +1,50 @@
+{
+  "name": "copyfomo",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.9"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "worker": "tsx --env-file-if-exists=.env --env-file-if-exists=.env.worker src/worker/index.ts",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "keys:gen": "tsx scripts/gen-keys.ts",
+    "test": "tsx --test \"src/**/*.test.ts\"",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@solana/wallet-adapter-base": "^0.9.28",
+    "@solana/wallet-adapter-react": "^0.15.40",
+    "@solana/wallet-adapter-react-ui": "^0.9.40",
+    "@solana/web3.js": "^1.99.0",
+    "bs58": "^6.0.0",
+    "next": "16.3.6",
+    "qrcode": "^1.5.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "ws": "^8.21.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
+    "dotenv": "^18.0.4",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}

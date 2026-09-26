@@ -1,0 +1,238 @@
+{
+  "image": "moodset.png",
+  "frameSize": 32,
+  "moods": [
+    "idle",
+    "blink",
+    "happy",
+    "buy",
+    "sell",
+    "sleep"
+  ],
+  "robots": [
+    "minty",
+    "byte",
+    "kit",
+    "orbit",
+    "the-original",
+    "the-copy"
+  ],
+  "frames": {
+    "minty:idle": {
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 32
+    },
+    "minty:blink": {
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 32
+    },
+    "minty:happy": {
+      "x": 64,
+      "y": 0,
+      "w": 32,
+      "h": 32
+    },
+    "minty:buy": {
+      "x": 96,
+      "y": 0,
+      "w": 32,
+      "h": 32
+    },
+    "minty:sell": {
+      "x": 128,
+      "y": 0,
+      "w": 32,
+      "h": 32
+    },
+    "minty:sleep": {
+      "x": 160,
+      "y": 0,
+      "w": 32,
+      "h": 32
+    },
+    "byte:idle": {
+      "x": 0,
+      "y": 32,
+      "w": 32,
+      "h": 32
+    },
+    "byte:blink": {
+      "x": 32,
+      "y": 32,
+      "w": 32,
+      "h": 32
+    },
+    "byte:happy": {
+      "x": 64,
+      "y": 32,
+      "w": 32,
+      "h": 32
+    },
+    "byte:buy": {
+      "x": 96,
+      "y": 32,
+      "w": 32,
+      "h": 32
+    },
+    "byte:sell": {
+      "x": 128,
+      "y": 32,
+      "w": 32,
+      "h": 32
+    },
+    "byte:sleep": {
+      "x": 160,
+      "y": 32,
+      "w": 32,
+      "h": 32
+    },
+    "kit:idle": {
+      "x": 0,
+      "y": 64,
+      "w": 32,
+      "h": 32
+    },
+    "kit:blink": {
+      "x": 32,
+      "y": 64,
+      "w": 32,
+      "h": 32
+    },
+    "kit:happy": {
+      "x": 64,
+      "y": 64,
+      "w": 32,
+      "h": 32
+    },
+    "kit:buy": {
+      "x": 96,
+      "y": 64,
+      "w": 32,
+      "h": 32
+    },
+    "kit:sell": {
+      "x": 128,
+      "y": 64,
+      "w": 32,
+      "h": 32
+    },
+    "kit:sleep": {
+      "x": 160,
+      "y": 64,
+      "w": 32,
+      "h": 32
+    },
+    "orbit:idle": {
+      "x": 0,
+      "y": 96,
+      "w": 32,
+      "h": 32
+    },
+    "orbit:blink": {
+      "x": 32,
+      "y": 96,
+      "w": 32,
+      "h": 32
+    },
+    "orbit:happy": {
+      "x": 64,
+      "y": 96,
+      "w": 32,
+      "h": 32
+    },
+    "orbit:buy": {
+      "x": 96,
+      "y": 96,
+      "w": 32,
+      "h": 32
+    },
+    "orbit:sell": {
+      "x": 128,
+      "y": 96,
+      "w": 32,
+      "h": 32
+    },
+    "orbit:sleep": {
+      "x": 160,
+      "y": 96,
+      "w": 32,
+      "h": 32
+    },
+    "the-original:idle": {
+      "x": 0,
+      "y": 128,
+      "w": 32,
+      "h": 32
+    },
+    "the-original:blink": {
+      "x": 32,
+      "y": 128,
+      "w": 32,
+      "h": 32
+    },
+    "the-original:happy": {
+      "x": 64,
+      "y": 128,
+      "w": 32,
+      "h": 32
+    },
+    "the-original:buy": {
+      "x": 96,
+      "y": 128,
+      "w": 32,
+      "h": 32
+    },
+    "the-original:sell": {
+      "x": 128,
+      "y": 128,
+      "w": 32,
+      "h": 32
+    },
+    "the-original:sleep": {
+      "x": 160,
+      "y": 128,
+      "w": 32,
+      "h": 32
+    },
+    "the-copy:idle": {
+      "x": 0,
+      "y": 160,
+      "w": 32,
+      "h": 32
+    },
+    "the-copy:blink": {
+      "x": 32,
+      "y": 160,
+      "w": 32,
+      "h": 32
+    },
+    "the-copy:happy": {
+      "x": 64,
+      "y": 160,
+      "w": 32,
+      "h": 32
+    },
+    "the-copy:buy": {
+      "x": 96,
+      "y": 160,
+      "w": 32,
+      "h": 32
+    },
+    "the-copy:sell": {
+      "x": 128,
+      "y": 160,
+      "w": 32,
+      "h": 32
+    },
+    "the-copy:sleep": {
+      "x": 160,
+      "y": 160,
+      "w": 32,
+      "h": 32
+    }
+  }
+}

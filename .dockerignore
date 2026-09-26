@@ -1,0 +1,14 @@
+# Never ship secrets or local state in an image.
+.env
+.env.*
+!.env.example
+# Turbopack / Next caches snapshot the environment (keys included); rebuild inside the image instead.
+.next
+# Local SQLite databases (production uses Postgres; see README "Deploying").
+prisma/*.db
+prisma/*.db-*
+node_modules
+.git
+.claude
+*.log
+tsconfig.tsbuildinfo

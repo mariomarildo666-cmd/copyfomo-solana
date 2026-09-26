@@ -1,0 +1,173 @@
+#!/usr/bin/env node
+// export.mjs — package a finished render as the app's static asset bundle (polisher).
+//   node render.mjs --out <tmp> --no-lab --no-parts      render the shipped cast somewhere
+//   node export.mjs <dest> [--from <tmp>]                  copy it into <dest> (e.g. public/bots) + manifest + README
+// <dest> gets: png/ png@8x/ svg/ anim/ icons/ sheet.png sheet.json moodset.png moodset.json manifest.json README.md
+// Nothing else in <dest> is touched except those names (they are replaced).
+import { cpSync, rmSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join, dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { PARTS, SEED_RULES, APP_MOODS, ANIMS } from './robot.mjs';
+import { SLOTS } from './sprite.mjs';
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const argv = process.argv.slice(2);
+const opt = (n) => { const i = argv.indexOf(n); return i >= 0 ? argv[i + 1] : undefined; };
+const dest = argv.find((a, i) => !a.startsWith('--') && argv[i - 1] !== '--from');
+if (!dest) { console.error('usage: node export.mjs <dest> [--from <render out dir>]'); process.exit(1); }
+const FROM = resolve(opt('--from') ?? join(HERE, 'out'));
+const DEST = resolve(dest);
+const src = JSON.parse(readFileSync(join(FROM, 'manifest.json'), 'utf8'));
+if (src.loadErrors?.length) throw new Error('render had part load errors: ' + src.loadErrors.join('; '));
+
+const DIRS = ['png', 'png@8x', 'svg', 'anim', 'icons'];
+const FILES = ['sheet.png', 'sheet.json', 'moodset.png', 'moodset.json'];
+mkdirSync(DEST, { recursive: true });
+for (const d of DIRS) {
+  rmSync(join(DEST, d), { recursive: true, force: true });
+  if (existsSync(join(FROM, d))) cpSync(join(FROM, d), join(DEST, d), { recursive: true });
+}
+for (const f of FILES) cpSync(join(FROM, f), join(DEST, f));
+
+// the render manifest's paths are relative to the render root ('out/png/x.png' or 'png/x.png'): make them bundle-relative
+const rel = (p) => p?.replace(/^.*?(?=(png@8x|png|svg|anim|icons|moods)\/)/, '');
+const sheet = JSON.parse(readFileSync(join(FROM, 'sheet.json'), 'utf8'));
+const tagsOf = (spec) => {
+  const t = new Set();
+  for (const slot of SLOTS) for (const n of spec[slot] ?? []) {
+    if (slot !== 'shadow') t.add(n);
+    for (const tag of PARTS[slot]?.[n]?.tags ?? []) t.add(tag);
+  }
+  t.add(spec.accent);
+  if (spec.eyeColor !== 'cyan') t.add(`eyes-${spec.eyeColor}`);
+  return [...t];
+};
+const robots = src.robots.filter((r) => !r.error).map((r) => ({
+  name: r.name,
+  group: r.group,
+  about: r.about,
+  tags: tagsOf(r.spec),
+  mood: r.mood,                       // resting mood of the idle picture (tofu rests in 'sleep')
+  moods: r.moods,                     // every mood its parts offer = its row of sheet.png, in this column order
+  appMoods: APP_MOODS.every((m) => r.moods.includes(m)),
+  sheetRow: sheet.frames[`${r.name}:${r.moods[0]}`].y / sheet.frameSize,
+  spec: Object.fromEntries(Object.entries(r.spec).filter(([, v]) => !(Array.isArray(v) && !v.length))),
+  files: {
+    png: rel(r.files.png), png8x: rel(r.files.png8), svg: rel(r.files.svg),
+    anim: Object.fromEntries(Object.entries(r.anims ?? {}).map(([k, a]) => [k, { file: rel(a.file), frames: a.frames, ms: a.ms }])),
+  },
+}));
+const manifest = {
+  name: 'copyfomo bots',
+  generator: 'tools/bots — node tools/bots/render.mjs --out <tmp> --no-lab --no-parts && node tools/bots/export.mjs public/bots --from <tmp>',
+  generated: src.generated,
+  frameSize: 32,
+  sheet: { image: 'sheet.png', frames: 'sheet.json', columns: sheet.columns, rows: sheet.rows },
+  moodset: { image: 'moodset.png', frames: 'moodset.json', moods: APP_MOODS, robots: src.moodset.robots },
+  appMoods: APP_MOODS,
+  anims: Object.fromEntries(Object.entries(ANIMS).map(([k, a]) => [k, { frames: a.frames, ms: a.ms }])),
+  groups: [...new Set(robots.map((r) => r.group))],
+  robots,
+  icons: src.icons.map((i) => ({ name: i.name, files: Object.fromEntries(Object.entries(i.files).map(([k, f]) => [k, rel(f)])) })),
+  seedRules: { accents: SEED_RULES.accents, allow: SEED_RULES.allow },
+};
+writeFileSync(join(DEST, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+writeFileSync(join(DEST, 'README.md'), readme(manifest));
+console.log(`exported ${robots.length} robots, ${manifest.icons.length} icons → ${DEST}`);
+
+function readme(m) {
+  const list = (g) => m.robots.filter((r) => r.group === g).map((r) => `| \`${r.name}\` | ${r.about ?? ''} | ${r.mood !== 'idle' ? r.mood : ''} |`).join('\n');
+  return `# copyfomo bots
+
+Pixel-art robot mascots for copyfomo: pearl-white shells, black glass faces, glowing eyes. Every sprite is a
+**32×32 px** transparent PNG with a 1-px empty margin. Scale only by whole numbers with nearest-neighbour sampling
+(\`image-rendering: pixelated\`). \`png@8x/\` holds the same pixels at 256×256, and \`svg/\` holds crisp vector copies.
+
+Everything here is generated by \`tools/bots\`. Do not edit these files by hand; regenerate them instead (see below).
+
+## Files
+
+| path | what |
+| --- | --- |
+| \`png/<name>.png\` | 32×32 picture in the robot's resting mood (use for 32–64 px avatars at 1×/2×) |
+| \`png@8x/<name>.png\` | the same at 256×256 (hero mascots, 128–256 px) |
+| \`svg/<name>.svg\` | the same as SVG rects (\`shape-rendering: crispEdges\`), any size |
+| \`sheet.png\` + \`sheet.json\` | every robot × every mood it offers: one row per robot, 32×32 frames. Keys: \`"<name>:<mood>"\`, plus \`"<name>"\` for its resting frame |
+| \`moodset.png\` + \`moodset.json\` | the app mood set (${m.appMoods.join(', ')}) for ${m.moodset.robots.join(', ')}. Keys: \`"<name>:<mood>"\` |
+| \`anim/<name>.blink.png\` | ${m.anims.blink.frames.length}-frame strip, ${m.anims.blink.ms} ms loop: idle with a blink (fx and hats move a little) |
+| \`anim/<name>.react.png\` | ${m.anims.react.frames.length}-frame strip, ${m.anims.react.ms} ms loop: wait → copy a buy → happy → copy a sell → nap |
+| \`icons/<icon>@{1,2,4,8,16}x.png\` | head-only app icons, transparent; \`-tile@…\` on mint (#dff7f2), \`-tile-dark@…\` on #0e1117 |
+| \`manifest.json\` | every robot: \`name\`, \`group\`, \`about\`, \`tags\`, \`mood\`, \`moods\` (= its sheet row, in column order), \`sheetRow\`, \`spec\`, \`files\` |
+
+## Naming
+
+- File names are the robot's \`name\` (lowercase, kebab-case). It is stable: code can build paths as \`/bots/png/\${name}.png\`.
+- Groups:
+  - \`heroes\`: the named cast.
+  - \`pair\`: \`the-original\` (a top trader, gold crown) and \`the-copy\` (your agent). They share one silhouette and differ only in hue.
+  - \`icons\`: head-only app icons, centred.
+- Mood names are the eye states:
+  - Every robot has: \`idle\`, \`blink\`, \`happy\`, \`wink\`, \`excited\`, \`love\`, \`buy\` (lime ▲), \`sell\` (orange ▼), \`money\`, \`thinking\`, \`sleep\`, \`shock\`, \`rekt\`, \`lookL\`, \`lookR\`.
+  - Waving robots also have \`wave\`, the second frame of the hello.
+  - The app set is ${m.appMoods.map((x) => `\`${x}\``).join(', ')}.
+- \`tags\` lists the part names and part tags of each robot (e.g. \`cat\`, \`hat\`, \`float\`, \`trade\`) plus its accent colour. Use them for filters and search.
+
+### Cast
+
+| heroes | about | rests in |
+| --- | --- | --- |
+${list('heroes')}
+
+| pair | about | |
+| --- | --- | --- |
+${list('pair')}
+
+## Using the sprites
+
+\`\`\`css
+.bot { width: 64px; height: 64px; image-rendering: pixelated; }          /* 2× of a 32 px frame */
+.bot-sheet {                                                              /* one frame of sheet.png at 2× */
+  width: 64px; height: 64px; image-rendering: pixelated;
+  background: url(/bots/sheet.png) 0 0 / ${m.sheet.columns * 64}px ${m.sheet.rows * 64}px no-repeat;
+  background-position: calc(-2px * var(--x)) calc(-2px * var(--y));     /* --x/--y = frame.x / frame.y from sheet.json */
+}
+.bot-react {                                                              /* the copy-trading loop, 2× */
+  width: 64px; height: 64px; image-rendering: pixelated;
+  background: url(/bots/anim/minty.react.png) 0 0 / ${m.anims.react.frames.length * 64}px 64px;
+  animation: bot-react ${m.anims.react.ms}ms steps(${m.anims.react.frames.length}) infinite;
+}
+@keyframes bot-react { to { background-position: -${m.anims.react.frames.length * 64}px 0; } }
+\`\`\`
+
+Use whole-number scales only (1×, 2×, 4×, 8×). A fractional size such as 48 px on a 32 px sprite smears pixels.
+
+## Robots from a wallet: \`fromSeed\`
+
+\`tools/bots/robot.mjs\` exports \`fromSeed(seed)\`, which turns any string (a Solana address, for example) into a robot spec. \`compose(spec)\` then draws it.
+
+1. **Hash.** The seed goes through FNV-1a into a mulberry32 random stream, so the same seed and the same part set always give the same robot.
+2. **Colours first.** The first two draws pick the accent (${m.seedRules.accents.join(', ')}) and the eye colour, mostly cyan. Adding parts never changes a seed's colours.
+3. **Parts from allow-lists.** In the order head, face, eyes, top, body, arms, front, fx, each slot picks a part by weight from \`SEED_RULES.allow\`. A slot may stay empty with a set chance. A new part is never picked until it is added there.
+4. **Compatibility rules.** \`SEED_RULES\` keeps out pairs and triples that clash:
+   - part \`requires\`/\`excludes\`;
+   - \`banned\` (e.g. a hat on the cat head, cheering arms on the wide head, the thumbs-up on the mini head);
+   - \`boost\` (e.g. the ω mouth on the cat head);
+   - \`emptyIf\`.
+   A prop only comes with the \`hold\` pose, and floating fx never come with raised or holding arms.
+5. **Pixel QA gate.** The rolled robot is composed in every app mood (plus the wave frame). If any frame has a problem (a doubled 2×2 outline, a pixel on the canvas edge, a stray pixel, or a compose warning), only the parts are re-rolled from \`"<seed>#1"\`, \`"<seed>#2"\`, and so on, and the colours stay. In a 500-wallet test about 1.4% needed a re-roll and none failed.
+6. **Chest screen.** Terminal bodies also get \`chest\` (candles, line, bars, check or gold), taken from the seed hash without using the random stream.
+
+**Persist the spec, not the seed.** The result depends on the part registry and the rules. Store the JSON spec from \`fromSeed\` when an agent is created, and draw it with \`compose(spec)\` from then on.
+
+## Regenerate
+
+\`\`\`sh
+node tools/bots/test.mjs                                   # engine, pixel-QA and seed checks
+node tools/bots/lint.mjs                                   # pixel QA of the cast + 48 wallet seeds (--dump <name> = ASCII)
+node tools/bots/render.mjs --out .bots-out --no-lab --no-parts    # render (also writes .bots-out/gallery.html)
+node tools/bots/export.mjs public/bots --from .bots-out           # refresh this folder
+\`\`\`
+
+The cast is defined in \`tools/bots/robots.mjs\` and the parts in \`tools/bots/parts/<slot>/*.mjs\`. The palette in \`tools/bots/palette.mjs\` is the only source of colour.
+`;
+}
