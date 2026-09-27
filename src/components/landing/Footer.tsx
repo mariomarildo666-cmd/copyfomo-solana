@@ -25,7 +25,6 @@ const COLUMNS: { title: string; links: { href: string; label: string; external?:
     title: "Learn",
     links: [
       { href: "/#how", label: "How it works" },
-      { href: "/#safety", label: "Safety & FAQ" },
     ],
   },
   {

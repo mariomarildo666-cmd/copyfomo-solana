@@ -45,7 +45,6 @@ export const TABS: NavItem[] = [
   { href: "/#how", label: "Guide", icon: "book", match: () => false },
 ];
 
-const HELP: NavItem = { href: "/#faq", label: "Help & FAQ", icon: "help", match: () => false };
 
 function NavIcon({ item, active, size = 18 }: { item: NavItem; active: boolean; size?: number }) {
   // Explore's mark is the filled mint grid while it is the current page, a plain line grid otherwise.
@@ -101,7 +100,6 @@ export function Shell({ children }: { children: ReactNode }) {
             </nav>
             <div className={s.foot}>
               <SideToken />
-              <SideLink item={HELP} pathname={pathname} />
               <WalletAccount />
             </div>
           </aside>
