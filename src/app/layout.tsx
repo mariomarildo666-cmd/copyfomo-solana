@@ -15,12 +15,25 @@ const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin
 const jetbrains = JetBrains_Mono({ variable: "--font-jetbrains", subsets: ["latin"], weight: ["500", "600"], display: "swap" });
 
 export const metadata: Metadata = {
+  // Absolute URLs for the share image (src/app/opengraph-image.jpg) and the icons.
+  metadataBase: new URL(config.siteUrl),
   title: {
     default: "copyfomo — copy the top of FOMO",
     template: "%s · copyfomo",
   },
   description:
     "Pick the best traders on FOMO. copyfomo spins up an agent with its own Solana wallet that mirrors their trades 1:1, the moment they land on-chain.",
+  openGraph: {
+    type: "website",
+    siteName: "copyfomo",
+    title: "copyfomo — copy the top of FOMO",
+    description: "Pick FOMO's best traders. Your agent mirrors every buy and sell 1:1, from its own wallet.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "copyfomo — copy the top of FOMO",
+    description: "Pick FOMO's best traders. Your agent mirrors every buy and sell 1:1, from its own wallet.",
+  },
 };
 
 export const viewport: Viewport = {

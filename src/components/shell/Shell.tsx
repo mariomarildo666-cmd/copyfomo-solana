@@ -4,10 +4,10 @@
 // sticky top bar + floating bottom tab bar on phones (≤ 760 px). Every page renders inside <main id="main">;
 // pages own their padding (the `.page` class in globals.css gives the mockup's).
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
-import { PixelRobot } from "@/components/bots/PixelRobot";
 import { TokenCard } from "@/components/project/TokenCard";
 import { useClientConfig } from "@/components/providers/AppConfig";
 import { cn } from "@/components/ui/cn";
@@ -60,7 +60,7 @@ function LiveDot() {
 export function Logo({ className }: { className?: string }) {
   return (
     <Link href="/" className={cn(s.brand, className)} aria-label="copyfomo home">
-      <PixelRobot name="icon-kit" size={32} loading="eager" />
+      <Image src="/brand/logo-96.png" alt="" width={32} height={32} priority unoptimized className="size-8 shrink-0 rounded-[9px]" />
       <span className={s.word} aria-hidden>
         copyfomo
       </span>
