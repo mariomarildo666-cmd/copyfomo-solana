@@ -33,6 +33,35 @@ export interface AppConfigDTO {
   platformFeeBps: number;
   /** Highest slippage a LIVE agent may use (create and rule changes), in bps. Paper agents allow up to 5000. */
   maxLiveSlippageBps: number;
+  /** The project's own X account and token (operator settings, public by design). */
+  project: ProjectDTO;
+}
+
+/**
+ * The project's public links, from PROJECT_X_URL and TOKEN_* (src/lib/project.ts). All optional: with nothing set,
+ * xUrl and token are null and the UI shows no token card at all.
+ */
+export interface ProjectDTO {
+  /** The project's X account, always normalized to https://x.com/<handle>. */
+  xUrl: string | null;
+  /** That handle without "@". */
+  xHandle: string | null;
+  /** Null only when nothing is configured (no X account, no TOKEN_CA, no TOKEN_SYMBOL). */
+  token: ProjectTokenDTO | null;
+}
+
+export interface ProjectTokenDTO {
+  /** Ticker without "$": 1–12 letters or digits ("COPYFOMO" by default). */
+  symbol: string;
+  /** Display name (TOKEN_NAME, e.g. "CopyFomo"); null when not set. */
+  name: string | null;
+  /** Contract (mint) address; null until it is set: the UI says "launching soon". */
+  ca: string | null;
+  /** "pump.fun" when the CA is a pump.fun mint (ends in "pump"), else "Solana"; null without a CA. */
+  venue: "pump.fun" | "Solana" | null;
+  /** https only; null without a CA. Defaults: pump.fun (pump mints) or Jupiter, and DexScreener. */
+  buyUrl: string | null;
+  chartUrl: string | null;
 }
 
 export interface TraderDTO {

@@ -18,5 +18,7 @@ export const GET = getHandler(async () => {
     // 500 = 5% of the realized profit on each winning copy sell. Losing sells, buys, deposits, withdrawals: 0.
     platformFeeBps: config.platformFeeBps,
     maxLiveSlippageBps: LIVE_MAX_SLIPPAGE_BPS,
+    // The site's own X account and token (TOKEN_CA is a public mint address): public by construction.
+    project: config.project,
   });
 });

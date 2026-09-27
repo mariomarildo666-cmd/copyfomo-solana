@@ -8,11 +8,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { PixelRobot } from "@/components/bots/PixelRobot";
+import { TokenCard } from "@/components/project/TokenCard";
+import { useClientConfig } from "@/components/providers/AppConfig";
 import { cn } from "@/components/ui/cn";
 import { Icon, type IconName } from "@/components/ui/icons";
 import { DotList } from "@/components/ui/primitives";
 import { WalletAccount } from "@/components/wallet/WalletButton";
 import { EngineStatus, ModeChip } from "./ModeChip";
+import { SideToken } from "./SideToken";
 import s from "./Shell.module.css";
 
 interface NavItem {
@@ -79,6 +82,7 @@ function SideLink({ item, pathname }: { item: NavItem; pathname: string }) {
 
 export function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const { project } = useClientConfig();
 
   return (
     <div className={s.outer}>
@@ -96,6 +100,7 @@ export function Shell({ children }: { children: ReactNode }) {
               ))}
             </nav>
             <div className={s.foot}>
+              <SideToken />
               <SideLink item={HELP} pathname={pathname} />
               <div className="flex flex-col gap-1.5">
                 <ModeChip placement="sidebar" />
@@ -116,6 +121,12 @@ export function Shell({ children }: { children: ReactNode }) {
 
           <main id="main" tabIndex={-1} className={cn(s.main, "focus-visible:outline-none")}>
             {children}
+            {/* phones have no sidebar: the token card closes every page (the home page has it in its hero and footer) */}
+            {project.token && pathname !== "/" ? (
+              <div className="mx-auto w-full max-w-md px-4 pt-8 app:hidden">
+                <TokenCard project={project} layout="strip" />
+              </div>
+            ) : null}
             <div className={s.legal}>
               <DotList items={["copyfomo · Solana", "not affiliated with FOMO", "copy-trading memecoins is risky"]} />
             </div>

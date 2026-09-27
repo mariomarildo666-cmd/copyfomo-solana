@@ -118,6 +118,21 @@
   gap: 10px;
 }
 
+/* buttons with a small line under them (the `meta` prop): the line is as wide as the buttons */
+.aside {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 10px;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* focus rings on the teal: dark ink reads, mint would not */
 .hero :focus-visible {
   outline-color: var(--hero-ink);
@@ -205,6 +220,18 @@
   }
   .stack .cta {
     flex-direction: row;
+  }
+  .aside {
+    width: 100%;
+    max-width: 420px;
+    margin: 14px auto 0;
+  }
+  .aside .cta {
+    max-width: none;
+    margin: 0;
+  }
+  .meta {
+    justify-content: center;
   }
 }
 /* compact (task pages such as the wizard): smaller robots and title on phones, so the task starts sooner */

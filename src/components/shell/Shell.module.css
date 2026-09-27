@@ -118,6 +118,17 @@
 .item[aria-current="page"] svg {
   color: var(--text);
 }
+/* the icon rail's token button while its popover is open (SideToken) */
+.coinBtn[aria-expanded="true"] {
+  background: var(--card);
+  color: var(--text);
+  box-shadow:
+    var(--shadow-pill),
+    inset 0 0 0 1px rgb(24 44 56 / 0.04);
+}
+.coinBtn[aria-expanded="true"] svg {
+  color: var(--text);
+}
 .lbl {
   flex: 1;
   min-width: 0;

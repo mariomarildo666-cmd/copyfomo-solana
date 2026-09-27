@@ -3,7 +3,7 @@
 import "./__testing__/env"; // first: keeps the real .env (keys, RPC URLs) out of this test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 
 const FAKE_PRIV = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=";
 
@@ -54,4 +54,58 @@ test("liveConfigErrors: fee wallet, Jupiter key and the retiring lite-api are re
   assert.match(liveConfigErrors({ ...ok, platformFeeWallet: "" })[0]!, /PLATFORM_FEE_WALLET/);
   assert.match(liveConfigErrors({ ...ok, jupiterApiKey: "" })[0]!, /JUPITER_API_KEY/);
   assert.match(liveConfigErrors({ ...ok, jupiterUrl: "https://lite-api.jup.ag" })[0]!, /lite-api/);
+});
+
+/** Import config.ts in a fresh process with `env` and report its project links (or the startup error). */
+function probeProject(env: Record<string, string>): { ok: true; project: unknown; stderr: string } | { ok: false; error: string } {
+  const code = `import("./src/lib/config.ts").then(
+    (m) => console.log(JSON.stringify({ ok: true, project: m.config.project })),
+    (e) => console.log(JSON.stringify({ ok: false, error: String(e && e.message) })),
+  );`;
+  const r = spawnSync(process.execPath, ["--import", "tsx", "-e", code], {
+    env: { PATH: process.env.PATH ?? "", SystemRoot: process.env.SystemRoot ?? "", DATABASE_URL: "file:./none.db", ...env } as unknown as NodeJS.ProcessEnv,
+    encoding: "utf8",
+  });
+  const out = JSON.parse(r.stdout.trim().split("\n").pop()!);
+  return out.ok ? { ...out, stderr: r.stderr } : out;
+}
+
+const PUMP_CA = "DK1c3Nx5c36ubbZzZTvyrSbo6SLFu6wqmuGVU4yipump";
+
+test("project links: parsed from the environment and exposed as config.project", () => {
+  const r = probeProject({ NEXT_RUNTIME: "nodejs", PROJECT_X_URL: "https://twitter.com/copyfomo", TOKEN_CA: PUMP_CA });
+  assert.equal(r.ok, true);
+  assert.deepEqual((r as { project: unknown }).project, {
+    xUrl: "https://x.com/copyfomo",
+    xHandle: "copyfomo",
+    token: {
+      symbol: "COPYFOMO",
+      name: null,
+      ca: PUMP_CA,
+      venue: "pump.fun",
+      buyUrl: `https://pump.fun/coin/${PUMP_CA}`,
+      chartUrl: `https://dexscreener.com/solana/${PUMP_CA}`,
+    },
+  });
+  const none = probeProject({ NEXT_RUNTIME: "nodejs" });
+  assert.deepEqual(none.ok && none.project, { xUrl: null, xHandle: null, token: null });
+});
+
+test("project links: a malformed value stops the web at startup, the worker only logs it", () => {
+  const bads: Record<string, string>[] = [
+    { TOKEN_CA: "not-a-mint" },
+    { PROJECT_X_URL: "https://example.com/copyfomo" },
+    { TOKEN_SYMBOL: "NO SPACES" },
+    { TOKEN_NAME: "<script>" },
+  ];
+  for (const bad of bads) {
+    const web = probeProject({ NEXT_RUNTIME: "nodejs", ...bad });
+    assert.equal(web.ok, false, JSON.stringify(bad));
+    assert.match((web as { error: string }).error, new RegExp(Object.keys(bad)[0]!));
+    // a cosmetic setting must never keep the copy engine from starting
+    const worker = probeProject(bad);
+    assert.equal(worker.ok, true, JSON.stringify(bad));
+    assert.deepEqual((worker as { project: unknown }).project, { xUrl: null, xHandle: null, token: null });
+    assert.match((worker as { stderr: string }).stderr, new RegExp(`${Object.keys(bad)[0]!}.*Ignored here`));
+  }
 });

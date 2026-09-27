@@ -182,7 +182,18 @@ URL, with a non-https `JUPITER_API_URL`, or when the seal key pair does not matc
 | `WORKER_SWAP_EXTRA_PROGRAMS` | worker | – | Operator hotfix: extra program ids the live swap guard allows (never System / Token / ATA / ComputeBudget) |
 | `LOG_LEVEL` | worker | `info` | `debug` / `info` / `warn` / `error` |
 | `WORKER_EXIT_AFTER_MS` | worker | – | Graceful shutdown after N ms (CI, or Windows where you can't send SIGINT) |
+| `PROJECT_X_URL` | web | – | The project's X account: `https://x.com/<handle>`, `https://twitter.com/<handle>` or `@handle` (shown as `https://x.com/<handle>`) |
+| `TOKEN_SYMBOL` | web | `COPYFOMO` | The project token's ticker without `$` (1–12 letters or digits) |
+| `TOKEN_NAME` | web | — | Display name shown next to the ticker, e.g. `CopyFomo` (1–32 letters, digits, spaces, dots, dashes) |
+| `TOKEN_CA` | web | – | The token's mint (contract) address, base58. Unset: the token card reads "$SYMBOL · launching soon" |
+| `TOKEN_BUY_URL`, `TOKEN_CHART_URL` | web | pump.fun or Jupiter, DexScreener | https only, used once `TOKEN_CA` is set. Buy defaults to `pump.fun/coin/<CA>` for pump.fun mints (ending in `pump`), else `jup.ag/swap/SOL-<CA>`; the chart to `dexscreener.com/solana/<CA>` |
 | `NEXT_PUBLIC_SITE_URL` | – | – | Reserved, not read by any code yet |
+
+The project links (`PROJECT_X_URL`, `TOKEN_*`) are public: the sidebar shows a token card ("$SYMBOL on pump.fun", the
+contract address with a copy button, Buy / Chart / X), the home hero and footer show the address and the X link, and
+phones get the card at the end of every other page. With none of them set there is no card. A malformed value is a
+config error in the web, like any other setting; the worker ignores them (it only logs one). A web restart applies a
+change, no rebuild.
 
 Next.js loads `.env.local` and `.env.production` **over** `.env`; the worker reads `.env` then `.env.worker`. Keep the
 seal public key the same everywhere: it must be exactly the one the worker logs at startup

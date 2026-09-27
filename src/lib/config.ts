@@ -3,7 +3,8 @@
 // Never import this from a client component.
 
 import bs58 from "bs58";
-import type { Mode } from "./types";
+import { NO_PROJECT, projectFromEnv } from "./project";
+import type { Mode, ProjectDTO } from "./types";
 
 function str(name: string, fallback = ""): string {
   const v = process.env[name];
@@ -90,6 +91,22 @@ function sealPrivateKey(): string {
     console.error(`[config] ${msg} Ignored in paper mode: the web process will not use it.`);
   }
   return "";
+}
+
+// ── Project links (the site's X account and token) ───────────────────────────────────────────────────
+/**
+ * PROJECT_X_URL and TOKEN_* (src/lib/project.ts). The web shows them, so a malformed value stops it at startup
+ * like any other setting. The worker and scripts never use them: there a typo is logged and ignored, so a
+ * cosmetic setting can never keep the copy engine (exits, withdrawals, fee sweeps) from starting.
+ */
+function projectLinks(): ProjectDTO {
+  try {
+    return projectFromEnv(process.env);
+  } catch (e) {
+    if (IS_NEXT_SERVER) throw e;
+    console.error(`[config] ${(e as Error).message}. Ignored here: only the web process shows the project links.`);
+    return NO_PROJECT;
+  }
 }
 
 // ── Client IP source for per-IP rate limits (finding F27) ──────────────────────────────────────────
@@ -287,6 +304,10 @@ export const config = Object.freeze({
     "xff",
   ),
   trustedProxyHops: Math.max(1, Math.floor(num("TRUSTED_PROXY_HOPS", 1))),
+
+  // ── Project links (public: the root layout and /api/config send them to browsers) ──
+  /** The project's X account and token: PROJECT_X_URL, TOKEN_SYMBOL, TOKEN_CA, TOKEN_BUY_URL, TOKEN_CHART_URL. */
+  project: projectLinks(),
 
   // ── Product limits ────────────────────────────────────────────────────
   minDepositSol: num("MIN_DEPOSIT_SOL", 0.05),

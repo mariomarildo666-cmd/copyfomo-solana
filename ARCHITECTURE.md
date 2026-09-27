@@ -96,6 +96,7 @@ export const IS_NEXT_SERVER: boolean          // Next's NEXT_RUNTIME define; ins
 export const config                           // + sessionSecret, platformFeeBps (0..2000), platformFeeWallet (base58|""),
                                               //   feeSweepMinSol, trustedIpSource/trustedProxyHops, jupiterRps/jupiterBurst,
                                               //   priorityFeeMaxBps/priorityFeeFloorLamports, minLiveTradeSol, …
+                                              //   project: ProjectDTO (PROJECT_X_URL, TOKEN_*; public, parsed by project.ts)
 export function liveConfigErrors(c = config): string[]   // missing PLATFORM_FEE_WALLET / JUPITER_API_KEY, lite-api URL
 
 // crypto.ts  (node:crypto only). Blob "v1." (no AAD) | "v2." (AES-GCM AAD = agentSealAad), see the file header
@@ -241,7 +242,7 @@ Bodies are JSON only (415), capped at 32 KB (streamed, 413). `cache-control: no-
 | GET `/api/auth/me` | – | – | `SessionDTO` (never 401) |
 | GET `/api/me/agents` | session | – | `MyAgentsDTO` |
 | GET `/api/me/balance` | session; 20/min/wallet, 60/min/IP | – | `WalletBalanceDTO` (503 when unavailable) |
-| GET `/api/config` | – | – | `AppConfigDTO` (incl. `platformFeeBps`, `maxLiveSlippageBps`) |
+| GET `/api/config` | – | – | `AppConfigDTO` (incl. `platformFeeBps`, `maxLiveSlippageBps`, `project`: the site's X account and token) |
 | GET `/api/traders?window=24h&limit=50` | – | – | `LeaderboardDTO` (`Cache-Control: public, s-maxage=60, stale-while-revalidate=300`) |
 | GET `/api/traders/lookup?q=` | 60/min/IP; 10/min/IP uncached wallet checks | – | `TraderLookupDTO` |
 | GET `/api/traders/[wallet]?view=full\|summary` | 60/min/IP (shared with the profile page) | – | `TraderDetailDTO` or 404 (`summary`: stats only, `private, max-age=30`) |

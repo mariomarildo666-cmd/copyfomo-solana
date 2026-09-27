@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <div className="page">
-      <Hero />
+      <Hero project={config.project} />
       <TraderExplorer defaultWindow="7d" />
 
       <div className="mt-10 flex flex-col gap-10 max-app:mt-8 max-app:gap-8">
@@ -50,7 +50,7 @@ export default function Home() {
           <Faq copyVenue={config.copyVenue} platformFeeBps={config.platformFeeBps} mode={config.mode} />
         </section>
 
-        <Footer />
+        <Footer project={config.project} />
       </div>
     </div>
   );

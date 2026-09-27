@@ -315,6 +315,10 @@ key and `copyfomo-update` fails at the fetch. Re-add it with the same `gh repo d
   `/var/run/reboot-required` exists (services start by themselves).
 - **Settings changes** (`web.env`): restart both services. `NEXT_PUBLIC_*` values are compiled in: change the
   domain with `copyfomo-setup --domain new.example` (it rebuilds).
+- **X account and token** (`PROJECT_X_URL`, `TOKEN_SYMBOL`, `TOKEN_NAME`, `TOKEN_CA`, optional `TOKEN_BUY_URL` /
+  `TOKEN_CHART_URL`): set them in `web.env` and `systemctl restart copyfomo-web` (no rebuild; the worker ignores
+  them). A server set up before these existed has no lines for them yet: add them by hand or re-run `copyfomo-setup`.
+  A malformed value is a config error (the site stops serving pages): `journalctl -u copyfomo-web -n 50` names it.
 - **Testing the kit** in a container or WSL: `setup.sh --skip upgrade,swap,ufw,fail2ban` skips those steps;
   `CF_NO_DETACH=1` runs setup/update/restore in the terminal instead of as a service.
 

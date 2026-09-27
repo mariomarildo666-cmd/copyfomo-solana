@@ -45,6 +45,8 @@ function clientConfig(): ClientConfig {
     maxTradersPerAgent: config.maxTradersPerAgent,
     platformFeeBps: config.platformFeeBps,
     maxLiveSlippageBps: LIVE_MAX_SLIPPAGE_BPS,
+    // the site's X account and token: public by construction (src/lib/project.ts)
+    project: config.project,
   };
 }
 

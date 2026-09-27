@@ -1,9 +1,12 @@
-// Landing footer: logo + one-line pitch, link columns, and the independence / risk statement. No hooks.
+// Landing footer: logo + one-line pitch (+ the project token's contract address and X link when configured), link
+// columns, and the independence / risk statement. No hooks (CaCopy is a client island).
 
 import Link from "next/link";
 import { PixelRobot } from "@/components/bots/PixelRobot";
+import { CaCopy } from "@/components/project/CaCopy";
 import { Icon } from "@/components/ui/icons";
-import { Kicker } from "@/components/ui/primitives";
+import { buttonClass, Kicker } from "@/components/ui/primitives";
+import type { ProjectDTO } from "@/lib/types";
 
 const LINK =
   "inline-flex items-center gap-1 rounded-sm text-[13px] font-medium text-text-2 underline-offset-2 transition-colors duration-150 hover:text-text hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
@@ -35,11 +38,41 @@ const COLUMNS: { title: string; links: { href: string; label: string; external?:
   },
 ];
 
-export function Footer() {
+/** "$SYMBOL 7xKq…pump [copy]" (or "· launching soon") and "@handle" on X. */
+function ProjectLinks({ project }: { project: ProjectDTO }) {
+  const token = project.token;
+  if (!token) return null;
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-2">
+      {token.ca ? (
+        <CaCopy ca={token.ca} symbol={token.symbol} variant="chip" label={`$${token.symbol}`} />
+      ) : (
+        <p className="inline-flex h-8 items-center gap-1.5 text-[12.5px] font-bold text-text-2">
+          <i aria-hidden className="size-1.5 rounded-full bg-mint-500 animate-blink" />${token.symbol}
+          <span className="font-medium text-muted">· launching soon</span>
+        </p>
+      )}
+      {project.xUrl ? (
+        <a
+          href={project.xUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonClass("outline", "sm", "max-app:h-10 max-app:px-4")}
+        >
+          <Icon name="x-logo" strokeWidth={2} />
+          {project.xHandle ? `@${project.xHandle}` : "Follow on X"}
+          <span className="sr-only"> on X (opens in a new tab)</span>
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
+export function Footer({ project }: { project: ProjectDTO }) {
   return (
     <footer className="border-t border-border pt-8">
       <div className="flex flex-col gap-8 md:flex-row md:justify-between">
-        <div className="max-w-xs">
+        <div>
           {/* the shell's Logo collapses to an icon on the rail breakpoints; the footer always shows the wordmark */}
           <Link
             href="/"
@@ -51,9 +84,10 @@ export function Footer() {
               copyfomo
             </span>
           </Link>
-          <p className="mt-3 text-[13px] leading-relaxed text-muted">
+          <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-muted">
             The copy desk for FOMO traders. Agents with their own wallets, mirroring on Solana, routed through Jupiter.
           </p>
+          <ProjectLinks project={project} />
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-8 sm:grid-cols-3">
           {COLUMNS.map((col) => (

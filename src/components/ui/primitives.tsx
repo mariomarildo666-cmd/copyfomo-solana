@@ -22,7 +22,7 @@ export { cn };
  * danger / danger-soft  destructive
  */
 export type ButtonVariant = "ink" | "white" | "mint" | "soft" | "outline" | "ghost" | "danger" | "danger-soft";
-export type ButtonSize = "xs" | "sm" | "md" | "lg";
+export type ButtonSize = "2xs" | "xs" | "sm" | "md" | "lg";
 export type ButtonShape = "pill" | "rect";
 
 const LIFT = "hover:-translate-y-px active:translate-y-0";
@@ -39,6 +39,8 @@ const VARIANTS: Record<ButtonVariant, string> = {
 };
 
 const SIZES: Record<ButtonSize, string> = {
+  // dense cards on desktop only (the sidebar's token card): never a phone touch target
+  "2xs": "h-7 gap-1 px-2 text-[11.5px] [&_svg]:size-3",
   xs: "h-[30px] gap-1.5 px-2.5 text-[12px] [&_svg]:size-[13px]",
   sm: "h-8 gap-1.5 px-3.5 text-[12.5px] [&_svg]:size-[14px]",
   // 44 px touch target on phones, the mockup's 36 px from the tablet frame up

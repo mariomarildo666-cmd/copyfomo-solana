@@ -44,6 +44,7 @@ const PATHS = {
   filter: '<path d="M3 5h18M6 12h12M10 19h4"/>',
   refresh: '<path d="M21 12a9 9 0 1 1-2.6-6.4L21 8"/><path d="M21 3v5h-5"/>',
   sol: '<path d="M5 7h12l2-3H7z"/><path d="M5 20h12l2-3H7z"/><path d="M19 13.5H7l-2-3h12z"/>',
+  coin: '<circle cx="12" cy="12" r="9"/><path d="M14.7 9.3c-.5-.8-1.5-1.3-2.7-1.3-1.6 0-2.7.8-2.7 2 0 2.6 5.4 1.4 5.4 4 0 1.2-1.1 2-2.7 2-1.3 0-2.3-.5-2.8-1.4"/><path d="M12 6.5V8M12 16v1.5"/>',
 } as const;
 
 export type IconName = keyof typeof PATHS | "explore" | "x-logo";

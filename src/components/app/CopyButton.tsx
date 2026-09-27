@@ -5,7 +5,8 @@ import { cn } from "@/components/ui/cn";
 import { Icon } from "@/components/ui/icons";
 import { buttonClass } from "@/components/ui/primitives";
 
-async function writeClipboard(text: string): Promise<boolean> {
+/** Copies text to the clipboard (with a hidden-textarea fallback); false when both ways fail. */
+export async function writeClipboard(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);
     return true;

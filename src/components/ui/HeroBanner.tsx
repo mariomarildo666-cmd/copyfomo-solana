@@ -21,6 +21,7 @@ export function HeroBanner({
   as: Tag = "h1",
   children,
   actions,
+  meta,
   bubble,
   robots = ["minty", "kit", "orbit"],
   stackActions = false,
@@ -36,6 +37,8 @@ export function HeroBanner({
   children?: ReactNode;
   /** Buttons (white + ink pills). */
   actions?: ReactNode;
+  /** A small line under the buttons (e.g. the project token's contract address and X link). */
+  meta?: ReactNode;
   /** Text of the speech bubble on the top-left corner ("gm"). Decorative. */
   bubble?: string;
   /** Cast robots standing on the banner, left to right (1–4; the copy column makes room for exactly these). */
@@ -86,7 +89,14 @@ export function HeroBanner({
         </Tag>
         {children ? <p className={styles.text}>{children}</p> : null}
       </div>
-      {actions ? <div className={styles.cta}>{actions}</div> : null}
+      {meta ? (
+        <div className={styles.aside}>
+          {actions ? <div className={styles.cta}>{actions}</div> : null}
+          <div className={styles.meta}>{meta}</div>
+        </div>
+      ) : actions ? (
+        <div className={styles.cta}>{actions}</div>
+      ) : null}
     </section>
   );
 }
