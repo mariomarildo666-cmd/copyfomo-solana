@@ -14,7 +14,7 @@ import { cn } from "@/components/ui/cn";
 import { Icon, type IconName } from "@/components/ui/icons";
 import { DotList } from "@/components/ui/primitives";
 import { WalletAccount } from "@/components/wallet/WalletButton";
-import { EngineStatus, ModeChip } from "./ModeChip";
+import { ModeChip } from "./ModeChip";
 import { SideToken } from "./SideToken";
 import s from "./Shell.module.css";
 
@@ -102,10 +102,6 @@ export function Shell({ children }: { children: ReactNode }) {
             <div className={s.foot}>
               <SideToken />
               <SideLink item={HELP} pathname={pathname} />
-              <div className="flex flex-col gap-1.5">
-                <ModeChip placement="sidebar" />
-                <EngineStatus className="px-1 max-side:hidden" />
-              </div>
               <WalletAccount />
             </div>
           </aside>
