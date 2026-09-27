@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # copyfomo: idempotent provisioning of one Ubuntu 24.04 server (run as root). Full walkthrough: deploy/README.md.
 #
-#   bash setup.sh --domain copyfomo.example [--email you@example.com] [--no-www]
+#   bash setup.sh --domain copyfomo.example [--email you@example.com] [--no-www | --www]
 #                 [--repo git@github.com:OWNER/REPO.git] [--branch main] [--secrets /root/copyfomo.secrets.env]
 #                 [--rebuild] [--skip upgrade,swap,ufw,fail2ban]
 #
@@ -32,6 +32,7 @@ while (($#)); do
     --branch) BRANCH=${2:?--branch needs a value}; shift 2 ;;
     --secrets) SECRETS=${2:?--secrets needs a value}; shift 2 ;;
     --no-www) WWW=no; shift ;;
+    --www) WWW=yes; shift ;; # the choice is remembered in deploy.conf; this turns a previous --no-www back off
     --rebuild) REBUILD=1; shift ;;
     --skip) SKIP=",${2:?--skip needs a value},"; shift 2 ;;
     -h | --help) usage; exit 0 ;;
