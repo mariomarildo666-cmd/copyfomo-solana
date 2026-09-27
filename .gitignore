@@ -52,5 +52,6 @@ next-env.d.ts
 # logs
 *.log
 
-# production secrets file built by deploy/make-secrets.sh (never commit)
+# production secrets file built by deploy/make-secrets.sh, and copies of the server's env files (never commit)
 *.secrets.env
+copyfomo-*.env

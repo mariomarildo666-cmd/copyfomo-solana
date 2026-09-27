@@ -205,10 +205,10 @@ its backups sit on its own disk: **a lost server loses everything that was not c
 encrypted storage (not git, not a chat, not the folder with the database backups), then prove the copy is right:
 
 ```powershell
-scp -i $HOME\.ssh\copyfomo_deploy root@SERVER:/etc/copyfomo/worker.env copyfomo-worker.env
-scp -i $HOME\.ssh\copyfomo_deploy root@SERVER:/etc/copyfomo/web.env copyfomo-web.env
+scp -i $HOME\.ssh\copyfomo_deploy root@SERVER:/etc/copyfomo/worker.env $HOME\copyfomo-worker.env
+scp -i $HOME\.ssh\copyfomo_deploy root@SERVER:/etc/copyfomo/web.env $HOME\copyfomo-web.env
 # store both in the password manager, then:
-Get-Content -Raw copyfomo-worker.env | ssh -i $HOME\.ssh\copyfomo_deploy root@SERVER copyfomo-offsite key-check
+Get-Content -Raw $HOME\copyfomo-worker.env | ssh -i $HOME\.ssh\copyfomo_deploy root@SERVER copyfomo-offsite key-check
 ```
 
 `key-check` compares what you send with the server's key (it is never stored or printed) and records that an
@@ -233,6 +233,7 @@ safely off the server is older than 26 h; `copyfomo-set-mode live` refuses above
 daily Task Scheduler job (it runs while you are logged in; the SSH key must work without a passphrase prompt):
 
 ```powershell
+ssh -i $HOME\.ssh\copyfomo_deploy root@SERVER copyfomo-backup     # right after the first setup there is none yet
 powershell -NoProfile -ExecutionPolicy Bypass -File C:\Users\GM\Desktop\copyfomo\deploy\pull-backups.ps1 -Server SERVER
 
 $action  = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File "C:\Users\GM\Desktop\copyfomo\deploy\pull-backups.ps1" -Server SERVER'
@@ -267,8 +268,8 @@ A backup from your PC: `scp` it to `/root/` first, then `copyfomo-restore /root/
 
    ```powershell
    ssh -i $HOME\.ssh\copyfomo_deploy root@NEW "install -d -m 0750 /etc/copyfomo"
-   scp -i $HOME\.ssh\copyfomo_deploy copyfomo-worker.env root@NEW:/etc/copyfomo/worker.env
-   scp -i $HOME\.ssh\copyfomo_deploy copyfomo-web.env root@NEW:/etc/copyfomo/web.env
+   scp -i $HOME\.ssh\copyfomo_deploy $HOME\copyfomo-worker.env root@NEW:/etc/copyfomo/worker.env
+   scp -i $HOME\.ssh\copyfomo_deploy $HOME\copyfomo-web.env root@NEW:/etc/copyfomo/web.env
    ssh -i $HOME\.ssh\copyfomo_deploy root@NEW "chmod 0600 /etc/copyfomo/worker.env"
    ```
 

@@ -516,11 +516,11 @@ if ! cf_offsite_key_ok; then
   fi
   cat <<EOF
 On your PC (PowerShell):
-    scp -i \$HOME\\.ssh\\copyfomo_deploy root@$SERVER_IP:$CF_WORKER_ENV copyfomo-worker.env
-    scp -i \$HOME\\.ssh\\copyfomo_deploy root@$SERVER_IP:$CF_WEB_ENV copyfomo-web.env
+    scp -i \$HOME\\.ssh\\copyfomo_deploy root@$SERVER_IP:$CF_WORKER_ENV \$HOME\\copyfomo-worker.env
+    scp -i \$HOME\\.ssh\\copyfomo_deploy root@$SERVER_IP:$CF_WEB_ENV \$HOME\\copyfomo-web.env
 Store both in a password manager / encrypted storage (not in git, not next to the DB backups), then prove the
 copy is right (it is compared with the server's key, never stored or printed):
-    Get-Content -Raw copyfomo-worker.env | ssh -i \$HOME\\.ssh\\copyfomo_deploy root@$SERVER_IP copyfomo-offsite key-check
+    Get-Content -Raw \$HOME\\copyfomo-worker.env | ssh -i \$HOME\\.ssh\\copyfomo_deploy root@$SERVER_IP copyfomo-offsite key-check
 Once the check passes and both files are in that storage, remove loose plaintext copies from the PC.
 copyfomo-set-mode live refuses until this check passes. If this server and your copy are both lost, every agent
 wallet's funds are unrecoverable; a provider snapshot is not such a copy.
