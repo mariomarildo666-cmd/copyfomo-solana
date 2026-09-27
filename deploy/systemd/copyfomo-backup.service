@@ -1,0 +1,14 @@
+# copyfomo nightly database backup (run by copyfomo-backup.timer; also run by copyfomo-update before every
+# update). Consistent online copy with SQLite VACUUM INTO, gzip, 14-day retention in /var/backups/copyfomo.
+[Unit]
+Description=copyfomo database backup
+Documentation=file:///usr/local/lib/copyfomo/README.md
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/copyfomo/backup.sh --label nightly
+Nice=10
+IOSchedulingClass=idle
+PrivateTmp=yes
+ProtectHome=yes

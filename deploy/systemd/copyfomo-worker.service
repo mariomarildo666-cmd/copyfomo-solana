@@ -1,0 +1,68 @@
+# copyfomo worker: copy engine, owner commands, fee sweeps, FOMO indexer. Exactly ONE per database.
+# Installed from deploy/systemd/ by setup.sh and copyfomo-update (local edits are overwritten: use
+# `systemctl edit copyfomo-worker` for a host-specific drop-in instead).
+[Unit]
+Description=copyfomo worker (copy engine + FOMO indexer)
+Documentation=file:///usr/local/lib/copyfomo/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Its own user: the web user (copyfomo) can read neither worker.env nor this process's environment/memory.
+# Primary group copyfomo gives it the shared database.
+User=copyfomo-worker
+Group=copyfomo
+WorkingDirectory=/opt/copyfomo/current
+EnvironmentFile=/etc/copyfomo/web.env
+# root:root 0600. systemd (PID 1, root) reads it and passes WALLET_SEAL_PRIVATE_KEY to this service only.
+EnvironmentFile=/etc/copyfomo/worker.env
+# node directly, not `npm run worker`: npm → sh → tsx would each receive SIGTERM from systemd and the worker
+# treats a second signal as "exit now". One process, one SIGTERM, one graceful shutdown.
+ExecStart=/usr/bin/node --import tsx src/worker/index.ts
+Restart=always
+RestartSec=5
+# Graceful stop: on SIGTERM the worker stops taking work and waits for sends already in flight (their whole
+# confirmation window, ~165 s) before exiting. Only then SIGKILL; the in-flight journal settles the rest on the
+# next start.
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=240
+UMask=0007
+LimitNOFILE=65536
+# No core dumps: the process memory holds the seal private key.
+LimitCORE=0
+# Under memory pressure the kernel kills a build or the web before the process that manages open positions.
+OOMScoreAdjust=-500
+SyslogIdentifier=copyfomo-worker
+
+# ── Sandbox ──────────────────────────────────────────────────────────────────────────────────────────
+# Do NOT add MemoryDenyWriteExecute=yes: V8's JIT needs writable+executable pages. tsx caches in /tmp (private).
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ReadWritePaths=/var/lib/copyfomo
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+RemoveIPC=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target

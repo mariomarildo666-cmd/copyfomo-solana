@@ -51,3 +51,6 @@ next-env.d.ts
 
 # logs
 *.log
+
+# production secrets file built by deploy/make-secrets.sh (never commit)
+*.secrets.env

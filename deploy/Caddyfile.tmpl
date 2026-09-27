@@ -1,0 +1,49 @@
+# /etc/caddy/Caddyfile: written by copyfomo deploy/setup.sh and copyfomo-update from deploy/Caddyfile.tmpl.
+# Local edits are overwritten; change the template in the repo instead.
+#
+# Caddy is the only thing listening on 80/443. It gets and renews the TLS certificates itself (Let's Encrypt,
+# HTTP-01/TLS-ALPN: the DNS A/AAAA records must point at this server), redirects http → https, and proxies
+# to the Next.js server on 127.0.0.1:3000.
+{
+	__EMAIL_LINE__
+}
+
+__DOMAIN__ {
+	encode zstd gzip
+
+	# The API caps JSON bodies at 32 KB itself; nothing legitimate is bigger than this.
+	request_body {
+		max_size 64KB
+	}
+
+	header {
+		# Next.js sends the same HSTS header on its own responses; this also covers Caddy's error pages.
+		# Add "; includeSubDomains" only once every subdomain of this domain is served over HTTPS.
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+		defer
+	}
+
+	reverse_proxy 127.0.0.1:3000 {
+		# Host is passed through unchanged: the wallet sign-in message is bound to it (src/lib/session.ts).
+		# X-Forwarded-For/-Proto/-Host are set by Caddy from the real connection; client-sent values are
+		# dropped (no trusted_proxies), which is what TRUSTED_IP_SOURCE=xff + TRUSTED_PROXY_HOPS=1 expects.
+		# While the web restarts during an update, wait for it instead of answering 502 at once.
+		lb_try_duration 20s
+		lb_try_interval 250ms
+	}
+
+	handle_errors {
+		@upstream_down expression `{err.status_code} in [502, 503, 504]`
+		handle @upstream_down {
+			header Retry-After 30
+			respond "copyfomo is restarting. Try again in a minute." 503
+		}
+	}
+}
+
+# BEGIN www
+www.__DOMAIN__ {
+	redir https://__DOMAIN__{uri} permanent
+}
+# END www
