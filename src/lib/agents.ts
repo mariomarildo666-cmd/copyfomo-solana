@@ -583,7 +583,9 @@ export async function listFloor(limit = 24): Promise<FloorDTO> {
   const visible = { status: { not: "stopped" } } satisfies Prisma.AgentWhereInput;
 
   const agentCount = await prisma.agent.count({ where: visible });
-  if (agentCount === 0) return demoFloor(n);
+  if (agentCount === 0) {
+    return { demo: false, agents: [], stats: { mode: config.mode, agents: 0, copies: 0, volumeSol: 0, medianLatencyMs: null } };
+  }
 
   // Headline stats count the deployment's own mode only (finding F41): on a live deployment, simulated paper
   // copies must not inflate copies / volume / latency. A paper deployment counts its paper agents.
@@ -646,7 +648,7 @@ export async function listFeed(limit = 30): Promise<FeedDTO> {
       },
     },
   });
-  if (events.length === 0) return demoFeed(n);
+  if (events.length === 0) return { demo: false, items: [] };
 
   const items: FeedItemDTO[] = events.map((e) => {
     // Best status first; on a tie a live copy beats a simulated paper one (finding F41).
@@ -673,146 +675,4 @@ export async function listFeed(limit = 30): Promise<FeedDTO> {
     };
   });
   return { demo: false, items };
-}
-
-// ── Demo data (shown only while there is no real activity) ──────────────────────────────────────────
-// Clearly fake: "demo_" handles, wallet null, signatures/mints "demo_…", ids "demo-…".
-
-const DEMO_AGENTS: ReadonlyArray<{ name: string; handle: string; displayName: string; sizing: SizingMode; equity: number; roi: number; latency: number }> = [
-  { name: "nightowl.copy", handle: "demo_nightowl", displayName: "Night Owl (demo)", sizing: "mirror", equity: 12.4, roi: 38.2, latency: 640 },
-  { name: "pixelpete.copy", handle: "demo_pixelpete", displayName: "Pixel Pete (demo)", sizing: "fixed", equity: 5.1, roi: 21.7, latency: 820 },
-  { name: "moonmath.copy", handle: "demo_moonmath", displayName: "Moon Math (demo)", sizing: "proportional", equity: 18.9, roi: 14.3, latency: 710 },
-  { name: "quietwhale.copy", handle: "demo_quietwhale", displayName: "Quiet Whale (demo)", sizing: "mirror", equity: 41.0, roi: 9.8, latency: 560 },
-  { name: "snipercat.copy", handle: "demo_snipercat", displayName: "Sniper Cat (demo)", sizing: "fixed", equity: 3.3, roi: 6.1, latency: 930 },
-  { name: "bytebandit.copy", handle: "demo_bytebandit", displayName: "Byte Bandit (demo)", sizing: "proportional", equity: 8.7, roi: 3.4, latency: 1_050 },
-  { name: "lowlatency.copy", handle: "demo_lowlatency", displayName: "Low Latency (demo)", sizing: "mirror", equity: 2.2, roi: -2.9, latency: 480 },
-  { name: "gridwalker.copy", handle: "demo_gridwalker", displayName: "Grid Walker (demo)", sizing: "fixed", equity: 6.6, roi: -7.5, latency: 1_210 },
-  { name: "tinybot.copy", handle: "demo_tinybot", displayName: "Tiny Bot (demo)", sizing: "fixed", equity: 0.9, roi: 27.0, latency: 870 },
-  { name: "paperhands.copy", handle: "demo_paperhands", displayName: "Paper Hands (demo)", sizing: "proportional", equity: 1.6, roi: -12.4, latency: 990 },
-];
-
-const DEMO_TOKENS: ReadonlyArray<{ symbol: string; mint: string }> = [
-  { symbol: "PIXL", mint: "demo_pixl" },
-  { symbol: "BYTE", mint: "demo_byte" },
-  { symbol: "GLTCH", mint: "demo_gltch" },
-  { symbol: "MOON8", mint: "demo_moon8" },
-  { symbol: "NOODL", mint: "demo_noodl" },
-  { symbol: "ZAP", mint: "demo_zap" },
-];
-
-/** Deterministic PRNG so a given time bucket always renders the same demo rows. */
-function mulberry32(seed: number): () => number {
-  let s = seed >>> 0;
-  return () => {
-    s = (s + 0x6d2b79f5) >>> 0;
-    let t = s;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function demoTrader(i: number): Pick<TraderDTO, "wallet" | "handle" | "displayName" | "avatarUrl"> {
-  const d = DEMO_AGENTS[i % DEMO_AGENTS.length]!;
-  // Demo traders have no wallet: "" is falsy, so every wallet link/lookup in the UI skips them.
-  return { wallet: "", handle: d.handle, displayName: d.displayName, avatarUrl: null };
-}
-
-function demoFloor(limit: number): FloorDTO {
-  const now = Date.now();
-  const minute = Math.floor(now / 60_000);
-  const agents: AgentSummaryDTO[] = DEMO_AGENTS.slice(0, limit).map((d, i) => {
-    const rand = mulberry32(minute * 31 + i);
-    // Slow drift so the floor feels alive between refreshes.
-    const roi = d.roi + Math.sin(minute / 17 + i) * 2.5;
-    const invested = d.equity * 0.8;
-    const pnlSol = (invested * roi) / 100;
-    const copies = 40 + i * 13 + Math.floor((minute % 10_000) / (3 + i));
-    const spark = Array.from({ length: SPARK_LEN }, () => ({
-      side: (rand() < 0.6 ? "buy" : "sell") as Side,
-      solAmount: round(0.05 + rand() * 0.9, 3),
-    }));
-    return {
-      id: `demo-${i + 1}`,
-      slug: `demo-${d.name.replace(/\.copy$/, "")}`,
-      name: d.name,
-      mode: config.mode,
-      status: "active",
-      sizingMode: d.sizing,
-      traders: [demoTrader(i), ...(i % 3 === 0 ? [demoTrader(i + 4)] : [])],
-      equitySol: round(d.equity + pnlSol, 4),
-      pnlSol: round(pnlSol, 4),
-      roiPct: round(roi, 2),
-      unpricedCount: 0,
-      unpricedCostSol: 0,
-      valuationStale: false,
-      copies,
-      medianLatencyMs: Math.round(d.latency + (rand() - 0.5) * 120),
-      spark,
-      lastTradeAt: new Date(now - Math.floor(rand() * 240_000) - 5_000).toISOString(),
-      createdAt: new Date(now - (i + 2) * 86_400_000).toISOString(),
-    };
-  });
-
-  const latencies = agents.flatMap((a) => (a.medianLatencyMs === null ? [] : [a.medianLatencyMs]));
-  return {
-    demo: true,
-    agents,
-    stats: {
-      mode: config.mode,
-      agents: agents.length,
-      copies: agents.reduce((s, a) => s + a.copies, 0),
-      volumeSol: round(agents.reduce((s, a) => s + a.copies * 0.31, 0), 2),
-      medianLatencyMs: median(latencies),
-    },
-  };
-}
-
-const DEMO_FEED_STEP_MS = 20_000;
-const DEMO_SKIP_REASONS = ["insufficient balance", "not holding"] as const;
-
-function demoFeed(limit: number): FeedDTO {
-  const now = Date.now();
-  const bucket = Math.floor(now / DEMO_FEED_STEP_MS);
-  const items: FeedItemDTO[] = [];
-  for (let k = 0; k < limit; k++) {
-    // One event per bucket; older items keep their content as new ones appear on top.
-    const b = bucket - k;
-    const rand = mulberry32(b);
-    const ai = Math.floor(rand() * DEMO_AGENTS.length);
-    const agent = DEMO_AGENTS[ai]!;
-    const token = DEMO_TOKENS[Math.floor(rand() * DEMO_TOKENS.length)]!;
-    const side: Side = rand() < 0.62 ? "buy" : "sell";
-    const solAmount = round(0.1 + rand() * 4.9, 3);
-    // Always in the past: bucket b's event lands somewhere inside the previous step.
-    const blockTime = new Date((b - 1) * DEMO_FEED_STEP_MS + Math.floor(rand() * (DEMO_FEED_STEP_MS - 3_000)));
-    const roll = rand();
-    const status: CopyStatus = roll < 0.84 ? "filled" : "skipped";
-    const latencyMs = status === "filled" ? Math.round(agent.latency + (rand() - 0.5) * 300) : null;
-    items.push({
-      id: `demo-${b}`,
-      original: {
-        id: `demo-${b}`,
-        signature: `demo_${b}`,
-        side,
-        mint: token.mint,
-        symbol: token.symbol,
-        solAmount,
-        venue: "fomo",
-        blockTime: blockTime.toISOString(),
-        trader: demoTrader(ai),
-      },
-      copy: {
-        agentId: `demo-${ai + 1}`,
-        agentName: agent.name,
-        agentSlug: `demo-${agent.name.replace(/\.copy$/, "")}`,
-        mode: config.mode,
-        status,
-        solAmount: status === "filled" ? round(Math.min(solAmount, 1), 3) : 0,
-        latencyMs,
-        reason: status === "skipped" ? DEMO_SKIP_REASONS[side === "sell" ? 1 : 0] : null,
-      },
-    });
-  }
-  return { demo: true, items };
 }
