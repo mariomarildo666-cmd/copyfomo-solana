@@ -80,7 +80,8 @@ if [[ -r /etc/os-release ]]; then
 fi
 command -v systemctl >/dev/null && [[ -d /run/systemd/system ]] || die "systemd is not running here"
 
-apt_get() { apt-get -y -q -o Acquire::Retries=3 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold "$@"; }
+# DPkg::Lock::Timeout: wait (up to 5 min) for apt-daily / unattended-upgrades instead of failing on their lock.
+apt_get() { apt-get -y -q -o DPkg::Lock::Timeout=300 -o Acquire::Retries=3 -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold "$@"; }
 
 # ── 1. Packages ──────────────────────────────────────────────────────────────────────────────────────────
 step "System packages"
