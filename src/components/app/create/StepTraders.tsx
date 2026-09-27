@@ -1,18 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import type { AppConfigDTO } from "@/lib/types";
 import { fmtSignedUsd, shortAddr } from "@/lib/format";
 import { PixelRobot } from "@/components/bots/PixelRobot";
 import { RobotTile } from "@/components/bots/RobotTile";
 import { Icon } from "@/components/ui/icons";
-import { EmptyState, Tag, buttonClass, cn } from "@/components/ui/primitives";
+import { Tag, buttonClass, cn } from "@/components/ui/primitives";
 import { FieldError } from "../Field";
 import type { CopyableTrader } from "../picks";
 import { VerifiedMark } from "../Tags";
 import { traderSeed } from "../TraderAvatar";
 import { traderName } from "../TraderIdentity";
 import { lookupNoteText, TraderLookup, type AddResult, type LookupNote } from "../TraderLookup";
+import { TraderPickList } from "./TraderPickList";
 
 export type Entry =
   | { key: string; state: "loading"; query: string }
@@ -39,6 +41,16 @@ export function StepTraders({
   onRetry: (key: string) => void;
 }) {
   const okCount = entries.filter((e) => e.state === "ok").length;
+  // Wallet → entry key, so the list can show what's picked and remove it (entries added from ?t= are keyed by query).
+  const keyByWallet = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const e of entries) {
+      if (e.state === "ok") m.set(e.trader.wallet, e.key);
+      else m.set(e.query, e.key);
+    }
+    return m;
+  }, [entries]);
+  const selectedWallets = useMemo(() => new Set(keyByWallet.keys()), [keyByWallet]);
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-start justify-between gap-3">
@@ -57,35 +69,43 @@ export function StepTraders({
       </div>
 
       {entries.length ? (
-        <ul className="flex flex-col gap-2" aria-label="Selected traders">
-          {entries.map((e) => (
-            <li key={e.key}>
-              <EntryRow entry={e} copyVenue={copyVenue} onRemove={onRemove} onRetry={onRetry} />
-            </li>
-          ))}
-        </ul>
+        <div className="flex flex-col gap-2">
+          <h3 className="text-[13px] font-bold text-text-2">Your originals</h3>
+          <ul className="flex flex-col gap-2" aria-label="Selected traders">
+            {entries.map((e) => (
+              <li key={e.key}>
+                <EntryRow entry={e} copyVenue={copyVenue} onRemove={onRemove} onRetry={onRetry} />
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : (
-        <EmptyState title="No originals yet" art={<PixelRobot name="the-original" mood="thinking" size={64} />}>
-          Paste a wallet or a known @handle below, or{" "}
-          <Link
-            href="/traders"
-            className={cn("font-semibold text-mint-700 underline decoration-mint-300 underline-offset-4 hover:decoration-mint-700", FOCUS)}
-          >
-            pick from the FOMO leaderboard
-          </Link>
-          .
-        </EmptyState>
+        <p className="flex items-center gap-3 rounded-card-sm border border-dashed border-border-strong bg-card px-3.5 py-3 text-[13px] font-medium text-muted">
+          <PixelRobot name="the-original" mood="thinking" size={32} />
+          No originals yet. Pick traders from the list below, or add anyone by wallet or @handle.
+        </p>
       )}
       <FieldError>{error}</FieldError>
 
+      <TraderPickList
+        selected={selectedWallets}
+        full={entries.length >= max}
+        max={max}
+        onAdd={(t) => onAdd(t, null)}
+        onRemove={(wallet) => {
+          const key = keyByWallet.get(wallet);
+          if (key) onRemove(key);
+        }}
+      />
+
       <div className="rounded-card-sm border border-border bg-card-2/60 p-3.5 app:p-4">
-        <TraderLookup id="wizard-lookup" onAdd={onAdd} max={max} label="Add a trader — wallet or @handle" />
+        <TraderLookup id="wizard-lookup" onAdd={onAdd} max={max} label="Not on the list? Add any wallet or @handle" />
       </div>
 
-      <Link href="/traders" className={buttonClass("outline", "md", "w-fit")}>
-        <Icon name="podium" size={15} strokeWidth={2} />
-        Browse the FOMO leaderboard
-        <Icon name="arrow" size={14} strokeWidth={2} className="text-icon" />
+      <Link href="/traders" className={cn("inline-flex w-fit items-center gap-1.5 text-[13px] font-semibold text-mint-700 hover:text-mint-800", FOCUS)}>
+        <Icon name="podium" size={14} strokeWidth={2} />
+        Open the full FOMO leaderboard
+        <Icon name="arrow" size={13} strokeWidth={2} />
       </Link>
     </div>
   );
