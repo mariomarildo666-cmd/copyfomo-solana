@@ -1,2 +1,0 @@
-# Deploy scripts run on Linux: always LF, whatever core.autocrlf says on the machine that checks them out.
-deploy/** text eol=lf
